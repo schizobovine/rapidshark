@@ -13,7 +13,10 @@
  */
 
 #include <Arduino.h>
-#include <EnableInterrupt.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
+#include <SPI.h>
+#include <Wire.h>
 #include <string.h>
 #include <stdlib.h>
 #include <avr/io.h>
@@ -23,15 +26,32 @@
 // PIN ASSIGNMENT
 ////////////////////////////////////////////////////////////////////////
 
-#define ENC_A      2
-#define ENC_B      3
+#define MOTOR_ON   3
 #define MOTOR_IN_A 5
 #define MOTOR_PWM  6
 #define MOTOR_IN_B 7
-#define ENC_SW     8
-#define LED_R      9
-#define LED_G      10
-#define LED_B      11
+#define MOTOR_CS   A0
+
+#define SPD_KNOB0  13
+#define SPD_KNOB1  9
+#define SPD_KNOB2  8
+#define SPD_KNOB3  10
+#define SPD_KNOB4  11
+#define SPD_KNOB5  12
+
+#define SPD_LEVEL_0 0
+#define SPD_LEVEL_1 51
+#define SPD_LEVEL_2 102
+#define SPD_LEVEL_3 153
+#define SPD_LEVEL_4 204
+#define SPD_LEVEL_5 255
+
+#define SPD_MASK_0 (1<<0)
+#define SPD_MASK_1 (1<<1)
+#define SPD_MASK_2 (1<<2)
+#define SPD_MASK_3 (1<<3)
+#define SPD_MASK_4 (1<<4)
+#define SPD_MASK_5 (1<<5)
 
 ////////////////////////////////////////////////////////////////////////
 // OTHER CONSTANTS
@@ -40,111 +60,86 @@
 // Hardware serial speed for debuggin'
 #define BAUD_RATE 9600
 
-// Bounds for PWM control. Arduino has about 10bits of PWM resolution, so we
-// need to bound what the encoder frobulates by those values.
-const int PWM_MIN = -1023;
-const int PWM_MAX = 1023;
-
-// Number of clicks ("detents" or pulses) per full rotation of the encoder
-#define CLICKS_PER_ROTATION (24)
-
-// User-definable number of rotations to hit full speed
-#define MAX_ROTATIONS (1)
-
-// How much PWM changes per detent of the encoder
-const int LEVEL_PER_CLICK = (PWM_MAX + 1) / (CLICKS_PER_ROTATION * MAX_ROTATIONS);
+// Display params
+#define DISPLAY_ADDR     SSD1306_I2C_ADDRESS
+#define DISPLAY_MODE     SSD1306_SWITCHCAPVCC
+#define DISPLAY_TEXTSIZE 2
+#define DISPLAY_COLOR    WHITE
+#define DISPLAY_RST_PIN  4
 
 ////////////////////////////////////////////////////////////////////////
 // GLOBAL STATE VARIABLES
 ////////////////////////////////////////////////////////////////////////
 
-// Holds the current encoder state
-volatile uint8_t enc_val = 0;
-volatile uint8_t last_enc_val = 0;
+// Display controller object
+Adafruit_SSD1306 display(DISPLAY_RST_PIN);
 
 // Holds the current speed state
-volatile uint16_t speed = 0;
+uint8_t speed = 0;
+
+// Motor on/off state via switch
+boolean motor_on = false;
+
+// Output of the current sense pin
+float current = 0;
+
+uint8_t last_value = 0;
 
 ////////////////////////////////////////////////////////////////////////
 // HELPER FUNCTIONS
 ////////////////////////////////////////////////////////////////////////
 
-void printEncoderStatus() {
-  PGM_P fmt = PSTR("%c %S");
-  PGM_P val = NULL;
-  char buff[16];
-  char dir = '?';
+void printStatus() {
+  display.clearDisplay();
+  display.setCursor(0, 0);
+  display.print("PWM ");
+  if (motor_on) {
+    display.println(speed, DEC);
+  } else {
+    display.println("off");
+  }
+  display.print("CS  ");
+  display.println(current, DEC);
+  display.display();
+}
 
-  switch(enc_val) {
-    case 0b0000: dir = '?'; val = PSTR("0000"); break;
-    case 0b0001: dir = '?'; val = PSTR("0001"); break;
-    case 0b0010: dir = '?'; val = PSTR("0010"); break;
-    case 0b0011: dir = '?'; val = PSTR("0011"); break;
-    case 0b0100: dir = '?'; val = PSTR("0100"); break;
-    case 0b0101: dir = '?'; val = PSTR("0101"); break;
-    case 0b0110: dir = '?'; val = PSTR("0110"); break;
-    case 0b0111: dir = '?'; val = PSTR("0111"); break;
-    case 0b1000: dir = '?'; val = PSTR("1000"); break;
-    case 0b1001: dir = '?'; val = PSTR("1001"); break;
-    case 0b1010: dir = '?'; val = PSTR("1010"); break;
-    case 0b1011: dir = '?'; val = PSTR("1011"); break;
-    case 0b1100: dir = '?'; val = PSTR("1100"); break;
-    case 0b1101: dir = '?'; val = PSTR("1101"); break;
-    case 0b1110: dir = '?'; val = PSTR("1110"); break;
-    case 0b1111: dir = '?'; val = PSTR("1111"); break;
-    default: break;
+uint8_t getSpeed() {
+  uint8_t value = 0;
+  uint8_t retval = 0;
+
+  value |= (digitalRead(SPD_KNOB0) == LOW ? 1 : 0) << 0;
+  value |= (digitalRead(SPD_KNOB1) == LOW ? 1 : 0) << 1;
+  value |= (digitalRead(SPD_KNOB2) == LOW ? 1 : 0) << 2;
+  value |= (digitalRead(SPD_KNOB3) == LOW ? 1 : 0) << 3;
+  value |= (digitalRead(SPD_KNOB4) == LOW ? 1 : 0) << 4;
+  value |= (digitalRead(SPD_KNOB5) == LOW ? 1 : 0) << 5;
+
+  if (value & SPD_MASK_1) {
+    retval = SPD_LEVEL_1;
+  } else if (value & SPD_MASK_2) {
+    retval = SPD_LEVEL_2;
+  } else if (value & SPD_MASK_3) {
+    retval = SPD_LEVEL_3;
+  } else if (value & SPD_MASK_4) {
+    retval = SPD_LEVEL_4;
+  } else if (value & SPD_MASK_5) {
+    retval = SPD_LEVEL_5;
+  } else {
+    retval = speed;
   }
 
-  snprintf_P(buff, sizeof(buff), fmt, dir, val);
-  Serial.println(buff);
+  if (value != last_value) {
+    last_value = value;
+    Serial.println(value, BIN);
+  }
+
+  return retval;
 
 }
 
-////////////////////////////////////////////////////////////////////////
-// INTERRUPT HANDLERS
-////////////////////////////////////////////////////////////////////////
-
-// In order to handle the encoder most properly, we need to setup interrupt
-// handlers to interpret the Grey code output on change and manipulate the
-// current PWM level accordingly. Note that these MUST return quickly because
-// interrupts are typically blocked during handler execution to avoid
-// overlapping handler runs and possible state loss; thus, only doing simple
-// math in them and leaving the actual PWM change to the main loop.
-
-//
-// Grey code state change diagram
-//
-//         00 <-> 01
-//          ^     ^
-//          |     |
-//          v     v
-//         10 <-> 11
-//
-// 01 00 CCW
-// 10 00 CW
-//
-// 00 01 CCW
-// 11 01 CW
-//
-// 01 11 CCW
-// 10 11 CW
-//
-// 00 10 CCW
-// 11 10 CW
-//
-// CW  1000, 1011, 1101, 1110
-// CCW 0111, 0100, 0010, 0001
-
-// 00 10
-//   old new
-// A   0
-// B
-
-void intr_encoder() {
-  uint8_t msb = digitalRead(ENC_A);
-  uint8_t lsb = digitalRead(ENC_B);
-  enc_val = (enc_val << 2) | (msb << 1) | lsb;
-  enc_val = enc_val & 0x0F;
+float getCurrentSense() {
+  int reading = analogRead(MOTOR_CS);
+  return (reading / 1024.0) * 5.0 / 0.14;
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -153,28 +148,32 @@ void intr_encoder() {
 
 void setup() {
 
-  pinMode(ENC_A, INPUT_PULLUP);
-  pinMode(ENC_B, INPUT_PULLUP);
-  pinMode(ENC_SW, INPUT_PULLUP);
+  // Boot display
+  Wire.begin();
+  display.begin(DISPLAY_MODE, DISPLAY_ADDR);
+  display.clearDisplay();
+  display.setTextColor(DISPLAY_COLOR);
+  display.setTextSize(DISPLAY_TEXTSIZE);
+  display.println("HAI");
+  display.display();
 
-  enableInterrupt(ENC_A, intr_encoder, CHANGE);
-  enableInterrupt(ENC_B, intr_encoder, CHANGE);
+  // Configure inputs
+  pinMode(MOTOR_ON, INPUT_PULLUP);
+  pinMode(MOTOR_CS, INPUT);
+  pinMode(SPD_KNOB0, INPUT_PULLUP);
+  pinMode(SPD_KNOB1, INPUT_PULLUP);
+  pinMode(SPD_KNOB2, INPUT_PULLUP);
+  pinMode(SPD_KNOB3, INPUT_PULLUP);
+  pinMode(SPD_KNOB4, INPUT_PULLUP);
+  pinMode(SPD_KNOB5, INPUT_PULLUP);
 
+  // Configure motor controller
   pinMode(MOTOR_IN_A, OUTPUT);
   pinMode(MOTOR_PWM, OUTPUT);
   pinMode(MOTOR_IN_B, OUTPUT);
-
   digitalWrite(MOTOR_IN_A, LOW);
   digitalWrite(MOTOR_IN_B, LOW);
   analogWrite(MOTOR_PWM, 0);
-
-  pinMode(LED_R, OUTPUT);
-  pinMode(LED_G, OUTPUT);
-  pinMode(LED_B, OUTPUT);
-
-  digitalWrite(LED_R, HIGH);
-  digitalWrite(LED_G, HIGH);
-  digitalWrite(LED_B, HIGH);
 
   Serial.begin(BAUD_RATE);
   Serial.println("HAI");
@@ -186,14 +185,23 @@ void setup() {
 ////////////////////////////////////////////////////////////////////////
 
 void loop() {
-  uint8_t check_val = enc_val;
 
-  if (last_enc_val != check_val) {
-    //Serial.println(enc_val, BIN);
-    printEncoderStatus();
-    last_enc_val = check_val;
+  motor_on = digitalRead(MOTOR_ON) ? LOW : HIGH;
+  speed = getSpeed();
+  current = getCurrentSense();
+
+  if (!motor_on) {
+    digitalWrite(MOTOR_IN_A, LOW);
+    digitalWrite(MOTOR_IN_B, LOW);
+    analogWrite(MOTOR_PWM, 0);
+  } else {
+    digitalWrite(MOTOR_IN_A, HIGH);
+    digitalWrite(MOTOR_IN_B, LOW);
+    analogWrite(MOTOR_PWM, speed);
   }
 
+  printStatus();
+  delay(100);
 }
 
 // vi: syntax=arduino
