@@ -26,32 +26,11 @@
 // PIN ASSIGNMENT
 ////////////////////////////////////////////////////////////////////////
 
-#define MOTOR_ON   3
-#define MOTOR_IN_A 5
-#define MOTOR_PWM  6
-#define MOTOR_IN_B 7
+#define MOTOR_IN_A 9
+#define MOTOR_PWM  10
+#define MOTOR_IN_B 11
+#define MOTOR_ON   12
 #define MOTOR_CS   A0
-
-#define SPD_KNOB0  13
-#define SPD_KNOB1  9
-#define SPD_KNOB2  8
-#define SPD_KNOB3  10
-#define SPD_KNOB4  11
-#define SPD_KNOB5  12
-
-#define SPD_LEVEL_0 0
-#define SPD_LEVEL_1 51
-#define SPD_LEVEL_2 102
-#define SPD_LEVEL_3 153
-#define SPD_LEVEL_4 204
-#define SPD_LEVEL_5 255
-
-#define SPD_MASK_0 (1<<0)
-#define SPD_MASK_1 (1<<1)
-#define SPD_MASK_2 (1<<2)
-#define SPD_MASK_3 (1<<3)
-#define SPD_MASK_4 (1<<4)
-#define SPD_MASK_5 (1<<5)
 
 ////////////////////////////////////////////////////////////////////////
 // OTHER CONSTANTS
@@ -65,7 +44,7 @@
 #define DISPLAY_MODE     SSD1306_SWITCHCAPVCC
 #define DISPLAY_TEXTSIZE 2
 #define DISPLAY_COLOR    WHITE
-#define DISPLAY_RST_PIN  4
+#define DISPLAY_RST_PIN  8
 
 ////////////////////////////////////////////////////////////////////////
 // GLOBAL STATE VARIABLES
@@ -80,7 +59,7 @@ uint8_t speed = 0;
 // Motor on/off state via switch
 boolean motor_on = false;
 
-// Output of the current sense pin
+// Output of the current sense pin (in mA)
 float current = 0;
 
 uint8_t last_value = 0;
@@ -92,14 +71,17 @@ uint8_t last_value = 0;
 void printStatus() {
   display.clearDisplay();
   display.setCursor(0, 0);
-  display.print("PWM ");
   if (motor_on) {
-    display.println(speed, DEC);
+    display.print("ON  ");
+    digitalWrite(LED_BUILTIN, HIGH);
   } else {
-    display.println("off");
+    display.print("OFF ");
+    digitalWrite(LED_BUILTIN, LOW);
   }
+  display.println(speed, DEC);
   display.print("CS  ");
-  display.println(current, DEC);
+  display.print(current, 1);
+  display.println("mA");
   display.display();
 }
 
@@ -107,31 +89,15 @@ uint8_t getSpeed() {
   uint8_t value = 0;
   uint8_t retval = 0;
 
-  value |= (digitalRead(SPD_KNOB0) == LOW ? 1 : 0) << 0;
-  value |= (digitalRead(SPD_KNOB1) == LOW ? 1 : 0) << 1;
-  value |= (digitalRead(SPD_KNOB2) == LOW ? 1 : 0) << 2;
-  value |= (digitalRead(SPD_KNOB3) == LOW ? 1 : 0) << 3;
-  value |= (digitalRead(SPD_KNOB4) == LOW ? 1 : 0) << 4;
-  value |= (digitalRead(SPD_KNOB5) == LOW ? 1 : 0) << 5;
-
-  if (value & SPD_MASK_1) {
-    retval = SPD_LEVEL_1;
-  } else if (value & SPD_MASK_2) {
-    retval = SPD_LEVEL_2;
-  } else if (value & SPD_MASK_3) {
-    retval = SPD_LEVEL_3;
-  } else if (value & SPD_MASK_4) {
-    retval = SPD_LEVEL_4;
-  } else if (value & SPD_MASK_5) {
-    retval = SPD_LEVEL_5;
-  } else {
-    retval = speed;
-  }
-
-  if (value != last_value) {
-    last_value = value;
-    Serial.println(value, BIN);
-  }
+  value |= (digitalRead(0) == LOW ? 1 : 0) << 0;
+  value |= (digitalRead(1) == LOW ? 1 : 0) << 1;
+  value |= (digitalRead(2) == LOW ? 1 : 0) << 2;
+  value |= (digitalRead(3) == LOW ? 1 : 0) << 3;
+  value |= (digitalRead(4) == LOW ? 1 : 0) << 4;
+  value |= (digitalRead(5) == LOW ? 1 : 0) << 5;
+  value |= (digitalRead(6) == LOW ? 1 : 0) << 6;
+  value |= (digitalRead(7) == LOW ? 1 : 0) << 7;
+  retval = value;
 
   return retval;
 
@@ -139,7 +105,7 @@ uint8_t getSpeed() {
 
 float getCurrentSense() {
   int reading = analogRead(MOTOR_CS);
-  return (reading / 1024.0) * 5.0 / 0.14;
+  return (reading / 1024.0) * 5.0 / 0.14 * 1000.0;
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -154,18 +120,22 @@ void setup() {
   display.clearDisplay();
   display.setTextColor(DISPLAY_COLOR);
   display.setTextSize(DISPLAY_TEXTSIZE);
+  display.setTextWrap(false);
   display.println("HAI");
   display.display();
 
   // Configure inputs
   pinMode(MOTOR_ON, INPUT_PULLUP);
   pinMode(MOTOR_CS, INPUT);
-  pinMode(SPD_KNOB0, INPUT_PULLUP);
-  pinMode(SPD_KNOB1, INPUT_PULLUP);
-  pinMode(SPD_KNOB2, INPUT_PULLUP);
-  pinMode(SPD_KNOB3, INPUT_PULLUP);
-  pinMode(SPD_KNOB4, INPUT_PULLUP);
-  pinMode(SPD_KNOB5, INPUT_PULLUP);
+  pinMode(0, INPUT_PULLUP);
+  pinMode(1, INPUT_PULLUP);
+  pinMode(2, INPUT_PULLUP);
+  pinMode(3, INPUT_PULLUP);
+  pinMode(4, INPUT_PULLUP);
+  pinMode(5, INPUT_PULLUP);
+  pinMode(6, INPUT_PULLUP);
+  pinMode(7, INPUT_PULLUP);
+  pinMode(LED_BUILTIN, OUTPUT);
 
   // Configure motor controller
   pinMode(MOTOR_IN_A, OUTPUT);
@@ -175,8 +145,8 @@ void setup() {
   digitalWrite(MOTOR_IN_B, LOW);
   analogWrite(MOTOR_PWM, 0);
 
-  Serial.begin(BAUD_RATE);
-  Serial.println("HAI");
+  //Serial.begin(BAUD_RATE);
+  //Serial.println("HAI");
 
 }
 
