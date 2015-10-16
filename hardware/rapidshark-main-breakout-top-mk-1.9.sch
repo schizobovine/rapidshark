@@ -6,7 +6,7 @@
 <setting alwaysvectorfont="no"/>
 <setting verticaltext="up"/>
 </settings>
-<grid distance="100" unitdist="mil" unit="mil" style="lines" multiple="1" display="yes" altdistance="1" altunitdist="mil" altunit="mil"/>
+<grid distance="100" unitdist="mil" unit="mil" style="lines" multiple="1" display="yes" altdistance="2" altunitdist="mil" altunit="mil"/>
 <layers>
 <layer number="1" name="Top" color="4" fill="1" visible="no" active="no"/>
 <layer number="16" name="Bottom" color="1" fill="1" visible="no" active="no"/>
@@ -187,10 +187,10 @@
 <wire x1="4" y1="-1.2" x2="4" y2="-1.7" width="0.2032" layer="21"/>
 <wire x1="2" y1="-1.2" x2="2" y2="-1.7" width="0.2032" layer="21"/>
 <wire x1="7.95" y1="2.8" x2="7.95" y2="-1.7" width="0.2032" layer="21"/>
-<pad name="1" x="0" y="0" drill="0.9" diameter="1.4" shape="octagon"/>
-<pad name="2" x="2" y="0" drill="0.9" diameter="1.4" shape="octagon"/>
-<pad name="3" x="4" y="0" drill="0.9" diameter="1.4" shape="octagon"/>
-<pad name="4" x="6" y="0" drill="0.9" diameter="1.4" shape="octagon"/>
+<pad name="1" x="0" y="0" drill="0.8" diameter="1.4224" shape="octagon"/>
+<pad name="2" x="2" y="0" drill="0.8" diameter="1.4224" shape="octagon"/>
+<pad name="3" x="4" y="0" drill="0.8" diameter="1.4224" shape="octagon"/>
+<pad name="4" x="6" y="0" drill="0.8" diameter="1.4224" shape="octagon"/>
 <text x="3" y="-1.85" size="0.6096" layer="25" font="vector" ratio="12" align="top-center">&gt;NAME</text>
 </package>
 <package name="JST-4-PH-RA-PTH">
@@ -3433,7 +3433,7 @@ Resettable Fuse. Spark Fun Electronics SKU : COM-08357</description>
 <part name="SUPPLY15" library="A_butts" deviceset="3.3V" device=""/>
 <part name="SUPPLY16" library="A_butts" deviceset="5V" device=""/>
 <part name="SUPPLY17" library="A_butts" deviceset="3.3V" device=""/>
-<part name="F1" library="A_butts" deviceset="PTC" device="SMD" value="100mA"/>
+<part name="F1" library="A_butts" deviceset="PTC" device="SMD" value="120mA"/>
 <part name="SUPPLY1" library="A_butts" deviceset="5V" device=""/>
 <part name="SUPPLY2" library="A_butts" deviceset="5V" device=""/>
 <part name="SUPPLY3" library="A_butts" deviceset="5V" device=""/>
@@ -3806,10 +3806,7 @@ Resettable Fuse. Spark Fun Electronics SKU : COM-08357</description>
 </sheet>
 </sheets>
 <errors>
-<approved hash="113,1,55.88,137.672,U1,,,,,"/>
 <approved hash="113,1,113.199,129.54,TVS,,,,,"/>
-<approved hash="113,1,93.98,96.4036,VSEL,,,,,"/>
-<approved hash="113,1,175.937,53.1453,DISPLAY,,,,,"/>
 </errors>
 </schematic>
 </drawing>
