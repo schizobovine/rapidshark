@@ -170,10 +170,10 @@
 <wire x1="30" y1="32" x2="32" y2="30" width="0.254" layer="46" curve="-90"/>
 <wire x1="32" y1="30" x2="32" y2="2" width="0.254" layer="46"/>
 <wire x1="32" y1="2" x2="30" y2="0" width="0.254" layer="46" curve="-90"/>
-<circle x="4.4" y="27.6" radius="1" width="0.254" layer="46"/>
-<circle x="27.6" y="27.6" radius="1" width="0.254" layer="46"/>
-<circle x="27.6" y="4.4" radius="1" width="0.254" layer="46"/>
-<circle x="4.4" y="4.4" radius="1" width="0.254" layer="46"/>
+<circle x="4.4" y="27.6" radius="1.1" width="0.254" layer="46"/>
+<circle x="27.6" y="27.6" radius="1.1" width="0.254" layer="46"/>
+<circle x="27.6" y="4.4" radius="1.1" width="0.254" layer="46"/>
+<circle x="4.4" y="4.4" radius="1.1" width="0.254" layer="46"/>
 <wire x1="50.8" y1="25.4" x2="50.8" y2="0" width="0.1524" layer="47"/>
 <wire x1="50.8" y1="0" x2="76.2" y2="0" width="0.1524" layer="47"/>
 <wire x1="76.2" y1="0" x2="76.2" y2="25.4" width="0.1524" layer="47"/>
@@ -192,10 +192,10 @@ Opaque Blue Acrylic (1.5mm)</text>
 <wire x1="30" y1="32" x2="32" y2="30" width="0.05" layer="20" curve="-90"/>
 <wire x1="32" y1="30" x2="32" y2="2" width="0.05" layer="20"/>
 <wire x1="32" y1="2" x2="30" y2="0" width="0.05" layer="20" curve="-90"/>
-<circle x="4.4" y="27.6" radius="1" width="0.05" layer="20"/>
-<circle x="27.6" y="27.6" radius="1" width="0.05" layer="20"/>
-<circle x="27.6" y="4.4" radius="1" width="0.05" layer="20"/>
-<circle x="4.4" y="4.4" radius="1" width="0.05" layer="20"/>
+<circle x="4.4" y="27.6" radius="1.1" width="0.05" layer="20"/>
+<circle x="27.6" y="27.6" radius="1.1" width="0.05" layer="20"/>
+<circle x="27.6" y="4.4" radius="1.1" width="0.05" layer="20"/>
+<circle x="4.4" y="4.4" radius="1.1" width="0.05" layer="20"/>
 <wire x1="10.5" y1="28.365" x2="10.5" y2="26.635" width="0.05" layer="20"/>
 <wire x1="10.5" y1="26.635" x2="11.135" y2="26" width="0.05" layer="20" curve="90"/>
 <wire x1="11.135" y1="29" x2="20.865" y2="29" width="0.05" layer="20"/>

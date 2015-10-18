@@ -190,10 +190,10 @@ Black ABS (1.5mm)</text>
 <wire x1="30" y1="2" x2="2" y2="2" width="0.254" layer="46"/>
 <wire x1="2" y1="2" x2="2" y2="30" width="0.254" layer="46"/>
 <wire x1="2" y1="30" x2="30" y2="30" width="0.254" layer="46"/>
-<circle x="4.4" y="27.6" radius="1" width="0.05" layer="48"/>
-<circle x="27.6" y="27.6" radius="1" width="0.05" layer="48"/>
-<circle x="27.6" y="4.4" radius="1" width="0.05" layer="48"/>
-<circle x="4.4" y="4.4" radius="1" width="0.05" layer="48"/>
+<circle x="4.4" y="27.6" radius="1.1" width="0.05" layer="48"/>
+<circle x="27.6" y="27.6" radius="1.1" width="0.05" layer="48"/>
+<circle x="27.6" y="4.4" radius="1.1" width="0.05" layer="48"/>
+<circle x="4.4" y="4.4" radius="1.1" width="0.05" layer="48"/>
 </plain>
 <libraries>
 </libraries>
