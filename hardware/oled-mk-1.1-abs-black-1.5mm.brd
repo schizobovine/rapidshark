@@ -197,14 +197,14 @@ calibration sq</text>
 <wire x1="65" y1="32" x2="67" y2="30" width="0.05" layer="20" curve="-90"/>
 <wire x1="67" y1="30" x2="67" y2="2" width="0.05" layer="20"/>
 <wire x1="67" y1="2" x2="65" y2="0" width="0.05" layer="20" curve="-90"/>
-<wire x1="64.6825" y1="2" x2="37.3175" y2="2" width="0.05" layer="20"/>
-<wire x1="37.3175" y1="2" x2="37" y2="2.3175" width="0.05" layer="20" curve="-90"/>
-<wire x1="37" y1="2.3175" x2="37" y2="29.6825" width="0.05" layer="20"/>
-<wire x1="37" y1="29.6825" x2="37.3175" y2="30" width="0.05" layer="20" curve="-90"/>
-<wire x1="37.3175" y1="30" x2="64.6825" y2="30" width="0.05" layer="20"/>
-<wire x1="64.6825" y1="30" x2="65" y2="29.6825" width="0.05" layer="20" curve="-90"/>
-<wire x1="65" y1="29.6825" x2="65" y2="2.3175" width="0.05" layer="20"/>
-<wire x1="65" y1="2.3175" x2="64.6825" y2="2" width="0.05" layer="20" curve="-90"/>
+<wire x1="64.365" y1="2" x2="37.635" y2="2" width="0.05" layer="20"/>
+<wire x1="37.635" y1="2" x2="37" y2="2.635" width="0.05" layer="20" curve="-90"/>
+<wire x1="37" y1="2.635" x2="37" y2="29.365" width="0.05" layer="20"/>
+<wire x1="37" y1="29.365" x2="37.635" y2="30" width="0.05" layer="20" curve="-90"/>
+<wire x1="37.635" y1="30" x2="64.365" y2="30" width="0.05" layer="20"/>
+<wire x1="64.365" y1="30" x2="65" y2="29.365" width="0.05" layer="20" curve="-90"/>
+<wire x1="65" y1="29.365" x2="65" y2="2.635" width="0.05" layer="20"/>
+<wire x1="65" y1="2.635" x2="64.365" y2="2" width="0.05" layer="20" curve="-90"/>
 <wire x1="100" y1="0" x2="72" y2="0" width="0.05" layer="20"/>
 <wire x1="72" y1="0" x2="70" y2="2" width="0.05" layer="20" curve="-90"/>
 <wire x1="70" y1="2" x2="70" y2="30" width="0.05" layer="20"/>
