@@ -64,10 +64,10 @@ Clear Acrylic (0.75mm)</text>
 <wire x1="30" y1="32" x2="32" y2="30" width="0.05" layer="20" curve="-90"/>
 <wire x1="32" y1="30" x2="32" y2="2" width="0.05" layer="20"/>
 <wire x1="32" y1="2" x2="30" y2="0" width="0.05" layer="20" curve="-90"/>
-<circle x="4.4" y="27.6" radius="1" width="0.05" layer="20"/>
-<circle x="27.6" y="27.6" radius="1" width="0.05" layer="20"/>
-<circle x="27.6" y="4.4" radius="1" width="0.05" layer="20"/>
-<circle x="4.4" y="4.4" radius="1" width="0.05" layer="20"/>
+<circle x="4.4" y="27.6" radius="1.1" width="0.05" layer="20"/>
+<circle x="27.6" y="27.6" radius="1.1" width="0.05" layer="20"/>
+<circle x="27.6" y="4.4" radius="1.1" width="0.05" layer="20"/>
+<circle x="4.4" y="4.4" radius="1.1" width="0.05" layer="20"/>
 </plain>
 <libraries>
 </libraries>
