@@ -60,12 +60,6 @@
 <circle x="27.6" y="27.6" radius="1" width="0.254" layer="46"/>
 <circle x="27.6" y="4.4" radius="1" width="0.254" layer="46"/>
 <circle x="4.4" y="4.4" radius="1" width="0.254" layer="46"/>
-<wire x1="50.8" y1="25.4" x2="50.8" y2="0" width="0.1524" layer="47"/>
-<wire x1="50.8" y1="0" x2="76.2" y2="0" width="0.1524" layer="47"/>
-<wire x1="76.2" y1="0" x2="76.2" y2="25.4" width="0.1524" layer="47"/>
-<wire x1="76.2" y1="25.4" x2="50.8" y2="25.4" width="0.1524" layer="47"/>
-<text x="64" y="12.7" size="1.27" layer="47" font="vector" ratio="12" align="center">1.00 in
-calibration sq</text>
 <text x="16" y="35" size="1.27" layer="48" font="vector" ratio="12" align="center">Layer 1
 Clear Acrylic (1.5mm)</text>
 <rectangle x1="2.35" y1="2.35" x2="29.65" y2="29.65" layer="43"/>
