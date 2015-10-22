@@ -2186,6 +2186,42 @@ will be further integrated into the Sparkfun Library for other footprints.  It c
 <wire x1="5.9" y1="0.25" x2="7" y2="0.25" width="0.1524" layer="21"/>
 <wire x1="-7.5" y1="6.25" x2="7.5" y2="6.25" width="0.1524" layer="21"/>
 </package>
+<package name="PAD-JUMPER-3-NO_YES_SILK_FULL_BOX_WIDE_SPACING">
+<description>&lt;b&gt;Solder jumper&lt;/b&gt;</description>
+<wire x1="3.175" y1="-1.524" x2="-3.175" y2="-1.524" width="0.1524" layer="21"/>
+<wire x1="3.175" y1="1.524" x2="3.429" y2="1.27" width="0.1524" layer="21" curve="-90"/>
+<wire x1="-3.429" y1="1.27" x2="-3.175" y2="1.524" width="0.1524" layer="21" curve="-90"/>
+<wire x1="-3.429" y1="-1.27" x2="-3.175" y2="-1.524" width="0.1524" layer="21" curve="90"/>
+<wire x1="3.175" y1="-1.524" x2="3.429" y2="-1.27" width="0.1524" layer="21" curve="90"/>
+<wire x1="3.429" y1="-1.27" x2="3.429" y2="1.27" width="0.1524" layer="21"/>
+<wire x1="-3.429" y1="-1.27" x2="-3.429" y2="1.27" width="0.1524" layer="21"/>
+<wire x1="-3.175" y1="1.524" x2="3.175" y2="1.524" width="0.1524" layer="21"/>
+<wire x1="2.794" y1="0" x2="3.302" y2="0" width="0.1524" layer="51"/>
+<wire x1="-2.794" y1="0" x2="-3.302" y2="0" width="0.1524" layer="51"/>
+<wire x1="0" y1="0.762" x2="0" y2="1.397" width="0.1524" layer="51"/>
+<wire x1="0" y1="-1.397" x2="0" y2="-0.762" width="0.1524" layer="51"/>
+<wire x1="2.032" y1="0.127" x2="2.032" y2="-0.127" width="1.27" layer="51" curve="-180" cap="flat"/>
+<wire x1="-2.032" y1="-0.127" x2="-2.032" y2="0.127" width="1.27" layer="51" curve="-180" cap="flat"/>
+<smd name="1" x="-2.54" y="0" dx="1.27" dy="2.54" layer="1"/>
+<smd name="2" x="0" y="0" dx="1.27" dy="2.54" layer="1"/>
+<smd name="3" x="2.54" y="0" dx="1.27" dy="2.54" layer="1"/>
+<text x="-3.429" y="1.778" size="1.27" layer="25" ratio="10">&gt;NAME</text>
+<text x="-0.1001" y="0" size="0.02" layer="27">&gt;VALUE</text>
+<rectangle x1="-0.508" y1="-0.762" x2="0.508" y2="0.762" layer="51"/>
+</package>
+<package name="PAD-JUMPER-3-NO_YES_SILK_FULL_BOX">
+<description>&lt;b&gt;Solder jumper&lt;/b&gt;</description>
+<wire x1="2.4" y1="-1" x2="-2.4" y2="-1" width="0.1524" layer="21"/>
+<wire x1="-2.4" y1="-1" x2="-2.4" y2="1" width="0.1524" layer="21"/>
+<wire x1="2.4" y1="-1" x2="2.4" y2="1" width="0.1524" layer="21"/>
+<wire x1="2.4" y1="1" x2="-2.4" y2="1" width="0.1524" layer="21"/>
+<smd name="1" x="-1.524" y="0" dx="1.2" dy="1.6" layer="1" stop="no" cream="no"/>
+<smd name="2" x="0" y="0" dx="1.2" dy="1.6" layer="1" stop="no" cream="no"/>
+<smd name="3" x="1.524" y="0" dx="1.2" dy="1.6" layer="1" stop="no" cream="no"/>
+<text x="0" y="1.25" size="0.8" layer="25" font="vector" ratio="12" align="bottom-center">&gt;NAME</text>
+<text x="0" y="-1.25" size="0.6" layer="27" font="vector" ratio="12" align="top-center">&gt;VALUE</text>
+<rectangle x1="-2.3" y1="-0.9" x2="2.3" y2="0.9" layer="29"/>
+</package>
 </packages>
 <symbols>
 <symbol name="LETTER_L">
@@ -2367,6 +2403,22 @@ will be further integrated into the Sparkfun Library for other footprints.  It c
 <wire x1="-5.08" y1="0" x2="-3.81" y2="0" width="0.1524" layer="94"/>
 <wire x1="3.81" y1="0" x2="5.08" y2="0" width="0.1524" layer="94"/>
 <text x="0" y="-1.905" size="1.27" layer="94" ratio="12" align="top-left">+t°</text>
+</symbol>
+<symbol name="PAD-JUMPER-3-NO">
+<wire x1="-0.635" y1="-1.397" x2="0.635" y2="-1.397" width="1.27" layer="94" curve="180" cap="flat"/>
+<wire x1="-0.635" y1="1.397" x2="0.635" y2="1.397" width="1.27" layer="94" curve="-180" cap="flat"/>
+<wire x1="1.27" y1="-0.635" x2="-1.27" y2="-0.635" width="0.1524" layer="94"/>
+<wire x1="-1.27" y1="-0.635" x2="-1.27" y2="0" width="0.1524" layer="94"/>
+<wire x1="-1.27" y1="0" x2="-1.27" y2="0.635" width="0.1524" layer="94"/>
+<wire x1="-1.27" y1="0.635" x2="1.27" y2="0.635" width="0.1524" layer="94"/>
+<wire x1="1.27" y1="0.635" x2="1.27" y2="-0.635" width="0.1524" layer="94"/>
+<wire x1="-2.54" y1="0" x2="-1.27" y2="0" width="0.1524" layer="94"/>
+<text x="2.54" y="0.381" size="1.778" layer="95">&gt;NAME</text>
+<text x="2.54" y="-1.905" size="1.778" layer="96">&gt;VALUE</text>
+<rectangle x1="-1.27" y1="-0.635" x2="1.27" y2="0.635" layer="94"/>
+<pin name="3" x="0" y="-5.08" visible="off" length="short" direction="pas" rot="R90"/>
+<pin name="1" x="0" y="5.08" visible="off" length="short" direction="pas" rot="R270"/>
+<pin name="2" x="-5.08" y="0" visible="off" length="short" direction="pas"/>
 </symbol>
 </symbols>
 <devicesets>
@@ -3399,6 +3451,33 @@ Resettable Fuse. Spark Fun Electronics SKU : COM-08357</description>
 </device>
 </devices>
 </deviceset>
+<deviceset name="JUMPER-PAD-3-NO" prefix="JP" uservalue="yes">
+<gates>
+<gate name="G$1" symbol="PAD-JUMPER-3-NO" x="0" y="0"/>
+</gates>
+<devices>
+<device name="" package="PAD-JUMPER-3-NO_YES_SILK_FULL_BOX_WIDE_SPACING">
+<connects>
+<connect gate="G$1" pin="1" pad="1"/>
+<connect gate="G$1" pin="2" pad="2"/>
+<connect gate="G$1" pin="3" pad="3"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+<device name="FULL_BOX_SILK" package="PAD-JUMPER-3-NO_YES_SILK_FULL_BOX">
+<connects>
+<connect gate="G$1" pin="1" pad="1"/>
+<connect gate="G$1" pin="2" pad="2"/>
+<connect gate="G$1" pin="3" pad="3"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+</devices>
+</deviceset>
 </devicesets>
 </library>
 </libraries>
@@ -3441,6 +3520,7 @@ Resettable Fuse. Spark Fun Electronics SKU : COM-08357</description>
 <part name="GND5" library="A_butts" deviceset="GND" device=""/>
 <part name="GND7" library="A_butts" deviceset="GND" device=""/>
 <part name="DSPLY" library="A_butts" deviceset="M06" device="JST-PH-PTH-VERT"/>
+<part name="VIN" library="A_butts" deviceset="JUMPER-PAD-3-NO" device="FULL_BOX_SILK"/>
 </parts>
 <sheets>
 <sheet>
@@ -3474,6 +3554,7 @@ Resettable Fuse. Spark Fun Electronics SKU : COM-08357</description>
 <instance part="GND5" gate="1" x="198.12" y="71.12"/>
 <instance part="GND7" gate="1" x="152.4" y="43.18"/>
 <instance part="DSPLY" gate="G$1" x="177.8" y="53.34" rot="MR0"/>
+<instance part="VIN" gate="G$1" x="83.82" y="96.52" rot="R180"/>
 </instances>
 <busses>
 </busses>
@@ -3664,9 +3745,9 @@ Resettable Fuse. Spark Fun Electronics SKU : COM-08357</description>
 <wire x1="127" y1="137.16" x2="129.54" y2="137.16" width="0.1524" layer="91"/>
 </segment>
 <segment>
-<wire x1="170.18" y1="124.46" x2="172.72" y2="124.46" width="0.1524" layer="91"/>
-<label x="170.18" y="124.46" size="1.27" layer="95" rot="R180" xref="yes"/>
-<pinref part="PUSHER" gate="G$1" pin="6"/>
+<pinref part="VIN" gate="G$1" pin="2"/>
+<wire x1="88.9" y1="96.52" x2="91.44" y2="96.52" width="0.1524" layer="91"/>
+<label x="91.44" y="96.52" size="1.27" layer="95" xref="yes"/>
 </segment>
 </net>
 <net name="DISP_RST" class="0">
@@ -3800,6 +3881,32 @@ Resettable Fuse. Spark Fun Electronics SKU : COM-08357</description>
 <wire x1="111.76" y1="134.62" x2="111.76" y2="137.16" width="0.1524" layer="91"/>
 <junction x="111.76" y="137.16"/>
 <pinref part="U1" gate="G$1" pin="VIN"/>
+</segment>
+</net>
+<net name="VIN_PUSHER" class="0">
+<segment>
+<wire x1="170.18" y1="124.46" x2="172.72" y2="124.46" width="0.1524" layer="91"/>
+<label x="170.18" y="124.46" size="1.27" layer="95" rot="R180" xref="yes"/>
+<pinref part="PUSHER" gate="G$1" pin="6"/>
+</segment>
+<segment>
+<pinref part="VIN" gate="G$1" pin="1"/>
+<wire x1="83.82" y1="91.44" x2="83.82" y2="88.9" width="0.1524" layer="91"/>
+<wire x1="83.82" y1="88.9" x2="91.44" y2="88.9" width="0.1524" layer="91"/>
+<label x="91.44" y="88.9" size="1.27" layer="95" xref="yes"/>
+</segment>
+</net>
+<net name="VIN_ACCEL" class="0">
+<segment>
+<pinref part="ACCEL" gate="G$1" pin="6"/>
+<wire x1="170.18" y1="147.32" x2="172.72" y2="147.32" width="0.1524" layer="91"/>
+<label x="170.18" y="147.32" size="1.27" layer="95" rot="R180" xref="yes"/>
+</segment>
+<segment>
+<pinref part="VIN" gate="G$1" pin="3"/>
+<wire x1="83.82" y1="101.6" x2="83.82" y2="104.14" width="0.1524" layer="91"/>
+<wire x1="83.82" y1="104.14" x2="91.44" y2="104.14" width="0.1524" layer="91"/>
+<label x="91.44" y="104.14" size="1.27" layer="95" xref="yes"/>
 </segment>
 </net>
 </nets>
