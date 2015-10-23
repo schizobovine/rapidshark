@@ -4944,11 +4944,11 @@ will be further integrated into the Sparkfun Library for other footprints.  It c
 <wire x1="-6.35" y1="-0.635" x2="-5.715" y2="-1.27" width="0.2032" layer="21"/>
 <wire x1="-4.445" y1="-1.27" x2="-5.715" y2="-1.27" width="0.2032" layer="21"/>
 <wire x1="6.35" y1="0.635" x2="6.35" y2="-0.635" width="0.2032" layer="21"/>
-<pad name="1" x="-5.08" y="0" drill="1" diameter="1.8796" shape="octagon" rot="R90"/>
-<pad name="2" x="-2.54" y="0" drill="1" diameter="1.8796" shape="octagon" rot="R90"/>
-<pad name="3" x="0" y="0" drill="1" diameter="1.8796" shape="octagon" rot="R90"/>
-<pad name="4" x="2.54" y="0" drill="1" diameter="1.8796" shape="octagon" rot="R90"/>
-<pad name="5" x="5.08" y="0" drill="1" diameter="1.8796" shape="octagon" rot="R90"/>
+<pad name="1" x="-5.08" y="0" drill="1" diameter="1.778" shape="octagon" rot="R90"/>
+<pad name="2" x="-2.54" y="0" drill="1" diameter="1.778" shape="octagon" rot="R90"/>
+<pad name="3" x="0" y="0" drill="1" diameter="1.778" shape="octagon" rot="R90"/>
+<pad name="4" x="2.54" y="0" drill="1" diameter="1.778" shape="octagon" rot="R90"/>
+<pad name="5" x="5.08" y="0" drill="1" diameter="1.778" shape="octagon" rot="R90"/>
 <text x="0" y="1.524" size="1.016" layer="25" font="vector" ratio="12" align="bottom-center">&gt;NAME</text>
 </package>
 <package name="SOD123">
@@ -5226,7 +5226,7 @@ Standard 8.5x11 US Letter frame</description>
 </device>
 </devices>
 </deviceset>
-<deviceset name="M08" prefix="JP" uservalue="yes">
+<deviceset name="M08" prefix="JP">
 <description>&lt;b&gt;Header 8&lt;/b&gt;
 Standard 8-pin 0.1" header. Use with straight break away headers (SKU : PRT-00116), right angle break away headers (PRT-00553), swiss pins (PRT-00743), machine pins (PRT-00117), and female headers (PRT-00115).</description>
 <gates>
@@ -6362,7 +6362,7 @@ These are standard reverse protection diodes and small signal diodes. SMA packag
 </technology>
 </technologies>
 </device>
-<device name="SOT23" package="SOT23-3">
+<device name="SOT23-3" package="SOT23-3">
 <connects>
 <connect gate="G$1" pin="A" pad="1"/>
 <connect gate="G$1" pin="C" pad="3"/>
@@ -6503,6 +6503,15 @@ These are standard reverse protection diodes and small signal diodes. SMA packag
 <connects>
 <connect gate="G$1" pin="A" pad="A"/>
 <connect gate="G$1" pin="C" pad="C"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+<device name="SOT23" package="SOT23">
+<connects>
+<connect gate="G$1" pin="A" pad="1"/>
+<connect gate="G$1" pin="C" pad="3"/>
 </connects>
 <technologies>
 <technology name=""/>
@@ -7813,10 +7822,10 @@ Standard 5-pin 0.1" header. Use with straight break away headers (SKU : PRT-0011
 <part name="GND1" library="A_butts" deviceset="GND" device=""/>
 <part name="SUPPLY3" library="A_butts" deviceset="5V" device=""/>
 <part name="SUPPLY5" library="A_butts" deviceset="3.3V" device=""/>
-<part name="D1" library="A_butts" deviceset="DIODE" device="SOD80"/>
+<part name="D1" library="A_butts" deviceset="DIODE" device="SOT23" value="BAS19L"/>
 <part name="JP3" library="A_butts" deviceset="M08" device="1X08"/>
-<part name="IC1" library="A_butts" deviceset="VREG_1117" device="SOT-23"/>
-<part name="C1" library="A_butts" deviceset="CAPACITOR-CERAMIC" device="C0603" value="1u"/>
+<part name="IC1" library="A_butts" deviceset="VREG_1117" device="SOT-23" value="AP2210N-3.3V"/>
+<part name="C1" library="A_butts" deviceset="CAPACITOR-CERAMIC" device="C0805" value="1u"/>
 <part name="C2" library="A_butts" deviceset="CAPACITOR-CERAMIC" device="C0805" value="10u"/>
 <part name="SUPPLY6" library="A_butts" deviceset="3.3V" device=""/>
 <part name="GND2" library="A_butts" deviceset="GND" device=""/>
@@ -8065,12 +8074,6 @@ Standard 5-pin 0.1" header. Use with straight break away headers (SKU : PRT-0011
 </nets>
 </sheet>
 </sheets>
-<errors>
-<approved hash="113,1,55.88,137.672,U1,,,,,"/>
-<approved hash="113,1,113.199,129.54,TVS,,,,,"/>
-<approved hash="113,1,93.98,96.4036,VSEL,,,,,"/>
-<approved hash="113,1,175.937,53.1453,DISPLAY,,,,,"/>
-</errors>
 </schematic>
 </drawing>
 </eagle>
