@@ -1,0 +1,20 @@
+Partlist
+
+Exported from rapidshark-main-breakout-top-mk-1.7-fab.sch at 10/24/15 5:31 PM
+
+EAGLE Version 6.5.0 Copyright (c) 1988-2013 CadSoft
+
+Assembly variant: 
+
+Part     Value                           Device                          Package                           Library  Sheet
+
+ACCEL    M06JST-PH-PTH-VERT              M06JST-PH-PTH-VERT              JST-6-PH-VERT-PTH                 A_butts  1
+BUTT     M04JST-PTH-VERT                 M04JST-PTH-VERT                 JST-4-PH-VERT-PTH                 A_butts  1
+CLIP     M04JST-PTH-VERT                 M04JST-PTH-VERT                 JST-4-PH-VERT-PTH                 A_butts  1
+DSPLY    M05JST-PH-VERT-PTH              M05JST-PH-VERT-PTH              JST-5-PH-VERT-PTH                 A_butts  1
+F1       120mA                           PTCSMD                          PTC-1206                          A_butts  1
+PUSHER   M06JST-PH-PTH-VERT              M06JST-PH-PTH-VERT              JST-6-PH-VERT-PTH                 A_butts  1
+TRIG     M04JST-PTH-VERT                 M04JST-PTH-VERT                 JST-4-PH-VERT-PTH                 A_butts  1
+TVS      SMAJ12CA                        TVSSMA                          SMA-DIODE-TVS-BIDIR               A_butts  1
+U1       ADAFRUIT_METRO_MININOSILK-AMBI2 ADAFRUIT_METRO_MININOSILK-AMBI2 ADAFRUIT_METRO_MINI_BACK          A_butts  1
+VSEL                                     JUMPER-PAD-3-NOFULL_BOX_SILK    PAD-JUMPER-3-NO_YES_SILK_FULL_BOX A_butts  1

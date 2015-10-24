@@ -1,0 +1,82 @@
+Pinlist
+
+Exported from rapidshark-main-breakout-top-mk-1.7-fab.sch at 10/24/15 5:55 PM
+
+EAGLE Version 6.5.0 Copyright (c) 1988-2013 CadSoft
+
+Part     Pad      Pin        Dir      Net
+
+ACCEL    1        1          pas      ACCEL_A
+         2        2          pas      ACCEL_PWM
+         3        3          pas      ACCEL_B
+         4        4          pas      VCC
+         5        5          pas      GND
+         6        6          pas               *** unconnected ***
+
+BUTT     1        1          pas      GND
+         2        2          pas      BUTT_Z
+         3        3          pas      BUTT_Y
+         4        4          pas      BUTT_X
+
+CLIP     1        1          pas      GND
+         2        2          pas      VCC
+         3        3          pas      DART_DETECT
+         4        4          pas      SW_CLIP
+
+DSPLY    1        1          pas      GND
+         2        2          pas      VCC
+         3        3          pas      DISP_RST
+         4        4          pas      SDA
+         5        5          pas      SCL
+
+F1       1        1          pas      N$1
+         2        2          pas      VIN
+
+PUSHER   1        1          pas      PUSH_A
+         2        2          pas      PUSH_PWM
+         3        3          pas      PUSH_B
+         4        4          pas      VCC
+         5        5          pas      GND
+         6        6          pas      VIN
+
+TRIG     1        1          pas      GND
+         2        2          pas      SW_PUSH
+         3        3          pas      SW_FIRE
+         4        4          pas      SW_ACCEL
+
+TVS      1        1          pas      GND
+         2        2          pas      N$1
+
+U1       1        D0         io                *** unconnected ***
+         2        D1         io                *** unconnected ***
+         3        D2         io       DART_DETECT
+         4        D3         io       SW_PUSH
+         5        D4         io       SW_CLIP
+         6        D5         io       SW_FIRE
+         7        D6         io       SW_ACCEL
+         8        D7         io       PUSH_A
+         9        D8         io       ACCEL_A
+         10       D9         io       ACCEL_PWM
+         11       D10        io       ACCEL_B
+         12       D11        io       PUSH_PWM
+         13       D12        io       PUSH_B
+         14       D13        io                *** unconnected ***
+         15       USB+       io                *** unconnected ***
+         16       RST        io                *** unconnected ***
+         17       3V         io       3.3V
+         18       5V         io       5V
+         19       GND        io       GND
+         20       GND        io       GND
+         21       VIN        io       N$1
+         22       AREF       io                *** unconnected ***
+         23       A0         io       BUTT_Z
+         24       A1         io       BUTT_Y
+         25       A2         io       BUTT_X
+         26       A3         io       DISP_RST
+         27       A4         io       SDA
+         28       A5         io       SCL
+
+VSEL     1        1          pas      3.3V
+         2        2          pas      VCC
+         3        3          pas      5V
+
