@@ -4318,7 +4318,7 @@ Standard 5-pin 0.1" header. Use with straight break away headers (SKU : PRT-0011
 <wire x1="101.6" y1="96.52" x2="101.6" y2="104.14" width="0.1524" layer="91"/>
 </segment>
 </net>
-<net name="DART" class="0">
+<net name="DART_DETECT" class="0">
 <segment>
 <pinref part="CLIP" gate="G$1" pin="3"/>
 <wire x1="170.18" y1="83.82" x2="172.72" y2="83.82" width="0.1524" layer="91"/>
@@ -4330,7 +4330,7 @@ Standard 5-pin 0.1" header. Use with straight break away headers (SKU : PRT-0011
 <pinref part="U1" gate="G$1" pin="D2"/>
 </segment>
 </net>
-<net name="CLIP" class="0">
+<net name="SW_CLIP" class="0">
 <segment>
 <pinref part="CLIP" gate="G$1" pin="4"/>
 <wire x1="170.18" y1="86.36" x2="172.72" y2="86.36" width="0.1524" layer="91"/>
@@ -4342,7 +4342,7 @@ Standard 5-pin 0.1" header. Use with straight break away headers (SKU : PRT-0011
 <pinref part="U1" gate="G$1" pin="D4"/>
 </segment>
 </net>
-<net name="PUSH" class="0">
+<net name="SW_PUSH" class="0">
 <segment>
 <pinref part="TRIG" gate="G$1" pin="2"/>
 <wire x1="170.18" y1="104.14" x2="172.72" y2="104.14" width="0.1524" layer="91"/>
@@ -4354,7 +4354,7 @@ Standard 5-pin 0.1" header. Use with straight break away headers (SKU : PRT-0011
 <pinref part="U1" gate="G$1" pin="D3"/>
 </segment>
 </net>
-<net name="FIRE" class="0">
+<net name="SW_FIRE" class="0">
 <segment>
 <pinref part="TRIG" gate="G$1" pin="3"/>
 <wire x1="170.18" y1="106.68" x2="172.72" y2="106.68" width="0.1524" layer="91"/>
@@ -4366,7 +4366,7 @@ Standard 5-pin 0.1" header. Use with straight break away headers (SKU : PRT-0011
 <pinref part="U1" gate="G$1" pin="D5"/>
 </segment>
 </net>
-<net name="ACCEL" class="0">
+<net name="SW_ACCEL" class="0">
 <segment>
 <pinref part="TRIG" gate="G$1" pin="4"/>
 <wire x1="170.18" y1="109.22" x2="172.72" y2="109.22" width="0.1524" layer="91"/>
@@ -4475,7 +4475,7 @@ Standard 5-pin 0.1" header. Use with straight break away headers (SKU : PRT-0011
 <pinref part="U1" gate="G$1" pin="D12"/>
 </segment>
 </net>
-<net name="X" class="0">
+<net name="BUTT_X" class="0">
 <segment>
 <wire x1="73.66" y1="144.78" x2="71.12" y2="144.78" width="0.1524" layer="91"/>
 <label x="73.66" y="144.78" size="1.27" layer="95" rot="MR180" xref="yes"/>
@@ -4487,7 +4487,7 @@ Standard 5-pin 0.1" header. Use with straight break away headers (SKU : PRT-0011
 <pinref part="BUTT" gate="G$1" pin="4"/>
 </segment>
 </net>
-<net name="Y" class="0">
+<net name="BUTT_Y" class="0">
 <segment>
 <wire x1="73.66" y1="142.24" x2="71.12" y2="142.24" width="0.1524" layer="91"/>
 <label x="73.66" y="142.24" size="1.27" layer="95" rot="MR180" xref="yes"/>
@@ -4499,7 +4499,7 @@ Standard 5-pin 0.1" header. Use with straight break away headers (SKU : PRT-0011
 <pinref part="BUTT" gate="G$1" pin="3"/>
 </segment>
 </net>
-<net name="Z" class="0">
+<net name="BUTT_Z" class="0">
 <segment>
 <wire x1="73.66" y1="139.7" x2="71.12" y2="139.7" width="0.1524" layer="91"/>
 <label x="73.66" y="139.7" size="1.27" layer="95" rot="MR180" xref="yes"/>
