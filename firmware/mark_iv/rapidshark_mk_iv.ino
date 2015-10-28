@@ -22,7 +22,8 @@
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
 
-#define SERIAL_DEBUG 0
+#define SERIAL_DEBUG 1
+#define SERIAL_BAUD_RATE 9600
 
 #if SERIAL_DEBUG
 #define DEBUG_PRINTLN(msg) Serial.println((msg))
@@ -62,7 +63,7 @@
 
 #define DISP_TEXTSIZE 1
 #define DISP_COLOR    WHITE
-#define DISP_ADDR     SSD1306_I2C_ADDRESS
+#define DISP_ADDR     0x3C
 #define DISP_MODE     SSD1306_SWITCHCAPVCC
 
 ////////////////////////////////////////////////////////////////////////
@@ -70,6 +71,7 @@
 ////////////////////////////////////////////////////////////////////////
 
 Adafruit_SSD1306 display(PIN_DISP_RST);
+//Adafruit_SSD1306 display = Adafruit_SSD1306();
 
 ////////////////////////////////////////////////////////////////////////
 // "HALPING" FUNCTIONS
@@ -82,7 +84,7 @@ Adafruit_SSD1306 display(PIN_DISP_RST);
 void setup() {
 
 #if SERIAL_DEBUG
-  delay(200);
+  delay(500);
   Serial.begin(SERIAL_BAUD_RATE);
   Serial.println("HAI");
 #endif
@@ -110,7 +112,11 @@ void setup() {
   display.setTextColor(DISP_COLOR);
   display.setTextSize(DISP_TEXTSIZE);
   display.println("I ARE BUTTS");
+  display.dim(false);
   display.display();
+
+  // Testing
+  pinMode(13, OUTPUT);
 
 }
 
@@ -120,6 +126,17 @@ void setup() {
 
 void loop() {
 
-  delay(1000);
+  uint32_t now = millis();
+  DEBUG_PRINTLN(now);
+
+  display.clearDisplay();
+  display.setCursor(0, 0);
+  display.println(now);
+  display.display();
+
+  digitalWrite(13, HIGH);
+  delay(500);
+  digitalWrite(13, LOW);
+  delay(500);
 
 }
