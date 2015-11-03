@@ -21,6 +21,7 @@
 #include <Wire.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
+#include <EnableInterrupt.h>
 
 #include "vnh5019.h"
 
@@ -88,6 +89,7 @@ VNH5019 motor_push  = VNH5019(PIN_PUSH_A, PIN_PUSH_B, PIN_PUSH_PWM);
 volatile boolean trigAccel = false;
 volatile boolean trigFire = false;
 volatile boolean trigPush = false;
+volatile uint8_t ammoCounter = 0;
 
 ////////////////////////////////////////////////////////////////////////
 // "HALPING" FUNCTIONS
@@ -124,18 +126,82 @@ void refreshDisplay() {
 }
 
 ////////////////////////////////////////////////////////////////////////
+// INTERRUPT HANDLERS
+////////////////////////////////////////////////////////////////////////
+
+/*
+ * irq_dart_detect - Called when the IR sensor gets occluded by a dart.
+ */
+void irq_dart_detect() {
+  if (ammoCounter > 0) {
+    ammoCounter--;
+  }
+}
+
+/*
+ * irq_sw_push - Called when the pusher switch opens/closes
+ */
+void irq_sw_push() {
+}
+
+/*
+ * irq_sw_clip - Called when the clip insert detection switch changed
+ */
+void irq_sw_clip() {
+}
+
+/*
+ * irq_sw_fire - Called when the fire trigger is pulled/released
+ */
+void irq_sw_fire() {
+}
+
+/*
+ * irq_sw_accel - Called when the acceleration trigger is pulled/released
+ */
+void irq_sw_accel() {
+}
+
+/*
+ * irq_butt_x - Called when user presses the X button (down only)
+ */
+void irq_butt_x() {
+}
+
+/*
+ * irq_butt_y - Called when user presses the Y button (down only)
+ */
+void irq_butt_y() {
+}
+
+/*
+ * irq_butt_z - Called when user presses the Z button (down only)
+ */
+void irq_butt_z() {
+}
+
+////////////////////////////////////////////////////////////////////////
 // STARTUP CODE
 ////////////////////////////////////////////////////////////////////////
 
-void setup() {
+/*
+ * irq_init - Setup interrupt handling routines
+ */
+void irq_init() {
+  enableInterrupt(PIN_DART_DETECT,  irq_dart_detect, RISING);
+  enableInterrupt(PIN_SW_PUSH,      irq_sw_push,     CHANGE);
+  enableInterrupt(PIN_SW_CLIP,      irq_sw_clip,     CHANGE);
+  enableInterrupt(PIN_SW_FIRE,      irq_sw_fire,     CHANGE);
+  enableInterrupt(PIN_SW_ACCEL,     irq_sw_accel,    CHANGE);
+  enableInterrupt(PIN_BUTT_Z,       irq_butt_x,      FALLING);
+  enableInterrupt(PIN_BUTT_Y,       irq_butt_y,      FALLING);
+  enableInterrupt(PIN_BUTT_X,       irq_butt_z,      FALLING);
+}
 
-#if SERIAL_DEBUG
-  delay(500);
-  Serial.begin(SERIAL_BAUD_RATE);
-  Serial.println("HAI");
-#endif
-
-  // Set initial pin modes
+/*
+ * pin_init - Set default pin modes/states
+ */
+void pin_init() {
   pinMode(PIN_DART_DETECT,  INPUT_PULLUP);
   pinMode(PIN_SW_PUSH,      INPUT_PULLUP);
   pinMode(PIN_SW_CLIP,      INPUT_PULLUP);
@@ -150,6 +216,18 @@ void setup() {
   pinMode(PIN_BUTT_Z,       INPUT_PULLUP);
   pinMode(PIN_BUTT_Y,       INPUT_PULLUP);
   pinMode(PIN_BUTT_X,       INPUT_PULLUP);
+}
+
+/*
+ * setup() - Main entry point
+ */
+void setup() {
+
+#if SERIAL_DEBUG
+  delay(500);
+  Serial.begin(SERIAL_BAUD_RATE);
+  Serial.println("HAI");
+#endif
 
   // Initialize display
   Wire.begin();
@@ -158,8 +236,8 @@ void setup() {
   display.setTextColor(DISP_COLOR);
   display.setTextSize(DISP_TEXT_LARGE);
   display.println();
-  display.println("RapidShark");
-  display.println("  Mark IV");
+  display.print("RapidShark");
+  display.print("  Mark IV");
   display.dim(false);
   display.display();
   delay(1000);
