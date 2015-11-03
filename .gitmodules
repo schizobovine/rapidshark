@@ -4,9 +4,6 @@
 [submodule "firmware/mark_iv/lib/Adafruit_GFX"]
 	path = firmware/mark_iv/lib/Adafruit_GFX
 	url = git@github.com:adafruit/Adafruit-GFX-Library.git
-[submodule "firmware/mark_iv/lib/Adafruit_SSD1306"]
-	path = firmware/mark_iv/lib/Adafruit_SSD1306
-	url = git@github.com:adafruit/Adafruit_SSD1306.git
 [submodule "firmware/mark_iv/lib/EnableInterrupt"]
 	path = firmware/mark_iv/lib/EnableInterrupt
 	url = git@github.com:GreyGnome/EnableInterrupt.git
