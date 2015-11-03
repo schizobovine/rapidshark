@@ -7,3 +7,6 @@
 [submodule "firmware/mark_iv/lib/EnableInterrupt"]
 	path = firmware/mark_iv/lib/EnableInterrupt
 	url = git@github.com:GreyGnome/EnableInterrupt.git
+[submodule "firmware/mark_iv/lib/Adafruit_SSD1306"]
+	path = firmware/mark_iv/lib/Adafruit_SSD1306
+	url = git@github.com:schizobovine/Adafruit_SSD1306.git
