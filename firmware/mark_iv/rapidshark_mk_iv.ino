@@ -90,6 +90,7 @@ volatile boolean trigAccel = false;
 volatile boolean trigFire = false;
 volatile boolean trigPush = false;
 volatile uint8_t ammoCounter = 0;
+volatile boolean clipPresent = false;
 
 ////////////////////////////////////////////////////////////////////////
 // "HALPING" FUNCTIONS
@@ -148,6 +149,11 @@ void irq_sw_push() {
  * irq_sw_clip - Called when the clip insert detection switch changed
  */
 void irq_sw_clip() {
+  if (digitalRead(PIN_SW_CLIP) == LOW) {
+    clipPresent = true;
+  } else {
+    clipPresent = false;
+  }
 }
 
 /*
