@@ -10,3 +10,6 @@
 [submodule "firmware/mark_iv/lib/Adafruit_SSD1306"]
 	path = firmware/mark_iv/lib/Adafruit_SSD1306
 	url = git@github.com:schizobovine/Adafruit_SSD1306.git
+[submodule "firmware/mark_iv/lib/Bounce2"]
+	path = firmware/mark_iv/lib/Bounce2
+	url = git@github.com:schizobovine/Bounce2.git
