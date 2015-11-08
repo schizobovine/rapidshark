@@ -22,6 +22,7 @@
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
 #include <EnableInterrupt.h>
+#include <Bounce2.h>
 
 #include "vnh5019.h"
 
