@@ -71,11 +71,8 @@ volatile uint8_t burstCounter = 0;
 // Current fire control mode
 fire_mode_t fireMode = MODE_FULL_AUTO;
 
-// Clip present?
-volatile bool clipPresent = false;
-
 // Display needs updated?
-volatile bool needsRefresh = true;
+//volatile bool needsRefresh = true;
 
 ////////////////////////////////////////////////////////////////////////
 // "HALPING" FUNCTIONS
@@ -98,32 +95,25 @@ void refreshDisplay() {
 
   display.setTextSize(1);
 
-  display.setCursor(0, 40);
-  if (switchAccelTrigger.read()) {
-    displayTextFlipped();
-  } else {
-    displayTextNormal();
-  }
-  display.print("ACC");
-
-  display.setCursor(0, 48);
-  if (switchFireTrigger.read()) {
-    displayTextFlipped();
-  } else {
-    displayTextNormal();
-  }
-  display.print("FIRE");
-
-  display.setCursor(0, 56);
-  if (switchPusher.read()) {
-    displayTextFlipped();
-  } else {
-    displayTextNormal();
-  }
-  display.print("PUSH");
+  displayLabel( 0, 40, "ACC" , (switchAccelTrigger.read()));
+  displayLabel( 0, 48, "FIRE", (switchFireTrigger.read()));
+  displayLabel( 0, 56, "PUSH", (switchPusher.read()));
+  displayLabel(30, 40, "DART", (dartDetector.read()));
+  displayLabel(30, 48, "CLIP", (switchClipDetect.read()));
 
   display.display();
 
+}
+
+void displayLabel(uint8_t x, uint8_t y, const char *text, bool invert) {
+  display.setCursor(x, y);
+  if (invert) {
+    displayTextFlipped();
+  } else {
+    displayTextNormal();
+  }
+  display.print(text);
+  displayTextNormal();
 }
 
 void setFireMode(fire_mode_t new_mode) {
@@ -168,7 +158,7 @@ void irq_dart_detect() {
   if (dartDetector.update()) {
     if (dartDetector.fell() && ammoCounter > 0) {
       ammoCounter--;
-      needsRefresh = true;
+      //needsRefresh = true;
     }
   }
 }
@@ -178,7 +168,7 @@ void irq_dart_detect() {
  */
 void irq_sw_push() {
   if (switchPusher.update()) {
-    needsRefresh = true;
+    //needsRefresh = true;
   }
 }
 
@@ -187,8 +177,7 @@ void irq_sw_push() {
  */
 void irq_sw_clip() {
   if (switchClipDetect.update()) {
-    clipPresent = switchClipDetect.read();
-    needsRefresh = true;
+    //needsRefresh = true;
   }
 }
 
@@ -197,7 +186,7 @@ void irq_sw_clip() {
  */
 void irq_sw_fire() {
   if (switchFireTrigger.update()) {
-    needsRefresh = true;
+    //needsRefresh = true;
   }
 }
 
@@ -206,7 +195,7 @@ void irq_sw_fire() {
  */
 void irq_sw_accel() {
   if (switchAccelTrigger.update()) {
-    needsRefresh = true;
+    //needsRefresh = true;
   }
 }
 
@@ -215,7 +204,7 @@ void irq_sw_accel() {
  */
 void irq_butt_x() {
   if (buttonX.update()) {
-    needsRefresh = true;
+    //needsRefresh = true;
   }
 }
 
@@ -224,7 +213,7 @@ void irq_butt_x() {
  */
 void irq_butt_y() {
   if (buttonY.update()) {
-    needsRefresh = true;
+    //needsRefresh = true;
   }
 }
 
@@ -233,7 +222,7 @@ void irq_butt_y() {
  */
 void irq_butt_z() {
   if (buttonZ.update()) {
-    needsRefresh = true;
+    //needsRefresh = true;
   }
 }
 
@@ -245,14 +234,14 @@ void irq_butt_z() {
  * init_irq - Setup interrupt handling routines
  */
 void init_irq() {
-  enableInterrupt(PIN_DART_DETECT,  irq_dart_detect, RISING);
+  enableInterrupt(PIN_DART_DETECT,  irq_dart_detect, CHANGE);
   enableInterrupt(PIN_SW_PUSH,      irq_sw_push,     CHANGE);
   enableInterrupt(PIN_SW_CLIP,      irq_sw_clip,     CHANGE);
   enableInterrupt(PIN_SW_FIRE,      irq_sw_fire,     CHANGE);
   enableInterrupt(PIN_SW_ACCEL,     irq_sw_accel,    CHANGE);
-  enableInterrupt(PIN_BUTT_Z,       irq_butt_x,      FALLING);
-  enableInterrupt(PIN_BUTT_Y,       irq_butt_y,      FALLING);
-  enableInterrupt(PIN_BUTT_X,       irq_butt_z,      FALLING);
+  enableInterrupt(PIN_BUTT_Z,       irq_butt_x,      CHANGE);
+  enableInterrupt(PIN_BUTT_Y,       irq_butt_y,      CHANGE);
+  enableInterrupt(PIN_BUTT_X,       irq_butt_z,      CHANGE);
 }
 
 /*
@@ -311,7 +300,7 @@ void setup() {
   init_bouncers();
   init_irq();
   init_display();
-  set_sleep_mode(SLEEP_MODE_IDLE);
+  //set_sleep_mode(SLEEP_MODE_IDLE);
 
   delay(500);
 
@@ -324,13 +313,14 @@ void setup() {
 void loop() {
 
   // Only bother updating the display if anything's changed
-  if (needsRefresh) {
+  //if (needsRefresh) {
     //needsRefresh = false;
     refreshDisplay();
-  }
+  //}
 
   // Put CPU to sleep until an event (likely one of our timer or pin change
   // interrupts) wakes it
-  sleep_mode();
+  //sleep_mode();
+  delay(100);
 
 }

@@ -80,6 +80,7 @@ void irq_butt_x();
 void irq_butt_y();
 void irq_butt_z();
 
+void displayLabel(uint8_t x, uint8_t y, const char *text, bool invert);
 void displayTextNormal();
 void displayTextFlipped();
 void refreshDisplay();
