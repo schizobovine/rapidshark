@@ -61,18 +61,21 @@ Bounce buttonX;
 Bounce buttonY;
 Bounce buttonZ;
 
-// Current & total 
+// Important state variables
+volatile bool isPusherSwitchOpen = false;
+volatile bool isClipDetected = false;
+volatile bool trigFire = false;
+volatile bool trigAccel = false;
+
+// Current & total ammo counters
 volatile uint8_t ammoCounter = 0;
 uint8_t ammoCounterTotal = 0;
-
-// Shots left to fire in burst mode
-volatile uint8_t burstCounter = 0;
 
 // Current fire control mode
 fire_mode_t fireMode = MODE_FULL_AUTO;
 
-// Display needs updated?
-//volatile bool needsRefresh = true;
+// Shots left to fire in burst mode
+volatile uint8_t burstCounter = 0;
 
 ////////////////////////////////////////////////////////////////////////
 // "HALPING" FUNCTIONS
@@ -95,11 +98,11 @@ void refreshDisplay() {
 
   display.setTextSize(1);
 
-  displayLabel( 0, 40, "ACC" , (switchAccelTrigger.read()));
-  displayLabel( 0, 48, "FIRE", (switchFireTrigger.read()));
-  displayLabel( 0, 56, "PUSH", (switchPusher.read()));
+  displayLabel( 0, 40, "ACC" , (trigAccel));
+  displayLabel( 0, 48, "FIRE", (trigFire));
+  displayLabel( 0, 56, "PUSH", (IS_PUSHER_EXTENDED));
   displayLabel(30, 40, "DART", (dartDetector.read()));
-  displayLabel(30, 48, "CLIP", (switchClipDetect.read()));
+  displayLabel(30, 48, "CLIP", (isClipDetected));
 
   display.display();
 
@@ -116,35 +119,67 @@ void displayLabel(uint8_t x, uint8_t y, const char *text, bool invert) {
   displayTextNormal();
 }
 
-void setFireMode(fire_mode_t new_mode) {
-  switch (new_mode) {
-
-    case MODE_SEMI_AUTO:
-      fireMode = MODE_SEMI_AUTO;
-      burstCounter = 0;
-      break;
-
-    case MODE_BURST:
-      fireMode = MODE_BURST;
-      burstCounter = BURST_COUNT;
-      break;
-
-    case MODE_FULL_AUTO:
-      fireMode = MODE_FULL_AUTO;
-      burstCounter = 0;
-      break;
-
-    default:
-      break;
-  }
-}
-
 void displayTextNormal() {
   display.setTextColor(WHITE);
 }
 
 void displayTextFlipped() {
   display.setTextColor(BLACK, WHITE);
+}
+
+////////////////////////////////////////////////////////////////////////
+// MOTOR STATE MACHINE
+////////////////////////////////////////////////////////////////////////
+
+/*
+ * setMotorState() 
+ *
+ * Called to figure out if motors should freewheel, brake or go, all based on
+ * current system state (isPusherSwitchOpen, fire/accel triggers, and finally
+ * fire control mode all factor in). In the stock Rapid Strike, this is handled
+ * via eletromechanics such that the three switches comprise the entire state
+ * machine. We have to simulate that here.
+ *
+ */
+void setMotorState() {
+ setPusherMotorState();
+ setAccelMotorState();
+}
+
+/*
+ * setPusherMotorState() 
+ *
+ * Called to figure out if pusher should brake or go, based on current system
+ * state (isPusherSwitchOpen, fire/accel triggers, and finally fire control
+ * mode all factor in).
+ *
+ */
+void setPusherMotorState() {
+  
+  // If pusher switch is open, this means it's extended outward and needs to be
+  // retracted no matter what;
+  if (IS_PUSHER_EXTENDED) {
+    motor_push.go();
+  }
+
+  else {
+    motor_push.brake_gnd();
+  }
+
+}
+
+/*
+ * setAccelMotorState() 
+ *
+ * Called to figure out if flywheel motors should freewheel or go, based on
+ * current system state (fire/accel triggers and fire control mode all factor
+ * in).
+ *
+ */
+void setAccelMotorState() {
+  
+  motor_accel.brake_gnd();
+
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -158,7 +193,6 @@ void irq_dart_detect() {
   if (dartDetector.update()) {
     if (dartDetector.fell() && ammoCounter > 0) {
       ammoCounter--;
-      //needsRefresh = true;
     }
   }
 }
@@ -168,7 +202,8 @@ void irq_dart_detect() {
  */
 void irq_sw_push() {
   if (switchPusher.update()) {
-    //needsRefresh = true;
+    isPusherSwitchOpen = (switchPusher.read() == HIGH);
+    setMotorState();
   }
 }
 
@@ -177,7 +212,7 @@ void irq_sw_push() {
  */
 void irq_sw_clip() {
   if (switchClipDetect.update()) {
-    //needsRefresh = true;
+    isClipDetected = (switchClipDetect.read() == HIGH);
   }
 }
 
@@ -186,7 +221,8 @@ void irq_sw_clip() {
  */
 void irq_sw_fire() {
   if (switchFireTrigger.update()) {
-    //needsRefresh = true;
+    trigFire = (switchFireTrigger.read());
+    setMotorState();
   }
 }
 
@@ -195,7 +231,8 @@ void irq_sw_fire() {
  */
 void irq_sw_accel() {
   if (switchAccelTrigger.update()) {
-    //needsRefresh = true;
+    trigAccel = (switchAccelTrigger.read());
+    setMotorState();
   }
 }
 
@@ -204,7 +241,6 @@ void irq_sw_accel() {
  */
 void irq_butt_x() {
   if (buttonX.update()) {
-    //needsRefresh = true;
   }
 }
 
@@ -213,7 +249,6 @@ void irq_butt_x() {
  */
 void irq_butt_y() {
   if (buttonY.update()) {
-    //needsRefresh = true;
   }
 }
 
@@ -222,7 +257,6 @@ void irq_butt_y() {
  */
 void irq_butt_z() {
   if (buttonZ.update()) {
-    //needsRefresh = true;
   }
 }
 
