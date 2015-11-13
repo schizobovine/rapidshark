@@ -163,3 +163,7 @@ void VNH5019::setPins(int8_t a, int8_t b, int8_t pwm) {
   this->pin_b = b;
   this->pin_pwm = pwm;
 }
+
+VNH5019_state_t VNH5019::getMotorState() {
+  return this->motor_state;
+}
