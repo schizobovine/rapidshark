@@ -64,12 +64,12 @@ Bounce buttonZ;
 // Important state variables
 volatile bool isPusherSwitchOpen = false;
 volatile bool isClipDetected = false;
-volatile bool trigFire = false;
-volatile bool trigAccel = false;
+volatile bool trigFireOpen = false;
+volatile bool trigAccelOpen = false;
 
 // Current & total ammo counters
-volatile uint8_t ammoCounter = 0;
-uint8_t ammoCounterTotal = 0;
+uint8_t ammoCounterTotal = 37;
+volatile uint8_t ammoCounter = ammoCounterTotal;
 
 // Current fire control mode
 fire_mode_t fireMode = MODE_FULL_AUTO;
@@ -98,11 +98,32 @@ void refreshDisplay() {
 
   display.setTextSize(1);
 
-  displayLabel( 0, 40, "ACC" , (trigAccel));
-  displayLabel( 0, 48, "FIRE", (trigFire));
+  displayLabel( 0, 40, "ACC" , (trigAccelOpen));
+  displayLabel( 0, 48, "FIRE", (trigFireOpen));
   displayLabel( 0, 56, "PUSH", (IS_PUSHER_EXTENDED));
   displayLabel(30, 40, "DART", (dartDetector.read()));
   displayLabel(30, 48, "CLIP", (isClipDetected));
+
+  display.setCursor(30, 56);
+  display.print("MODE");
+  display.setCursor(60, 56);
+  switch (fireMode) {
+    case MODE_SEMI_AUTO:
+      display.print("SEMI");
+      break;
+    case MODE_BURST:
+      display.print("BURST");
+      break;
+    case MODE_FULL_AUTO:
+      display.print("FULL");
+      break;
+    default:
+      display.print("???");
+      break;
+  }
+
+  displayLabel(60, 40, "MACC", (motor_accel.isGoing()));
+  displayLabel(60, 48, "MPSH", (motor_push.isGoing()));
 
   display.display();
 
@@ -158,12 +179,36 @@ void setPusherMotorState() {
   
   // If pusher switch is open, this means it's extended outward and needs to be
   // retracted no matter what;
-  if (IS_PUSHER_EXTENDED) {
-    motor_push.go();
-  }
 
-  else {
+  if (IS_PUSHER_EXTENDED) {
+
+    motor_push.go();
+
+  // Pusher switch is assumed to be closed for the other states.
+
+  // If the fire trigger is open, user has let go of it, and so yank brake to
+  // stop pusher and thus stop firing.
+  } else if (trigFireOpen) {
+
     motor_push.brake_gnd();
+
+  // Trigger held down, so activate depending on fire control mode and
+  // potentially burst counter.
+  } else {
+
+    // Keep plugging away for full auto mode
+    if (fireMode == MODE_FULL_AUTO) {
+      motor_push.go();
+
+    // For burst/semi, only activate if we have shots remaining
+    } else if (burstCounter > 0) {
+      motor_push.go();
+
+    // Otherwise deactivate
+    } else {
+      motor_push.brake_gnd();
+    }
+
   }
 
 }
@@ -177,8 +222,31 @@ void setPusherMotorState() {
  *
  */
 void setAccelMotorState() {
-  
-  motor_accel.brake_gnd();
+
+  // If the acceleration trigger is being pushed, just go
+  if (!trigAccelOpen) {
+    motor_accel.go();
+
+  // If the fire trigger is being pushed, just go IFF we're supposed to be firing
+  } else if (!trigFireOpen) {
+
+    // Keep plugging away for full auto mode
+    if (fireMode == MODE_FULL_AUTO) {
+      motor_accel.go();
+
+    // For burst/semi, only activate if we have shots remaining
+    } else if (burstCounter > 0) {
+      motor_accel.go();
+
+    // Otherwise deactivate
+    } else {
+      motor_accel.freewheel();
+    }
+
+  // No triggers, no spinny
+  } else {
+    motor_accel.freewheel();
+  }
 
 }
 
@@ -201,9 +269,25 @@ void irq_dart_detect() {
  * irq_sw_push - Called when the pusher switch opens/closes
  */
 void irq_sw_push() {
+
+  // Read switch value and if and only if it's changed, change some state
   if (switchPusher.update()) {
+
+    // Read switch value for display loop later on
     isPusherSwitchOpen = (switchPusher.read() == HIGH);
+
+    // If the pusher limit switch is closing, the arm is almost full retracted,
+    // meaning we've just completed a single fire cycle. In limited fire modes,
+    // this means we should mark off one shot taken.
+    if (switchPusher.fell()) {
+      if ((fireMode == MODE_SEMI_AUTO || fireMode == MODE_BURST) && burstCounter > 0) {
+        burstCounter--;
+      }
+    }
+
+    // Change motor states if needed
     setMotorState();
+
   }
 }
 
@@ -212,7 +296,7 @@ void irq_sw_push() {
  */
 void irq_sw_clip() {
   if (switchClipDetect.update()) {
-    isClipDetected = (switchClipDetect.read() == HIGH);
+    isClipDetected = (switchClipDetect.read() == LOW);
   }
 }
 
@@ -220,8 +304,29 @@ void irq_sw_clip() {
  * irq_sw_fire - Called when the fire trigger is pulled/released
  */
 void irq_sw_fire() {
+
+  // Read switch value and if and only if it's changed, change some state
   if (switchFireTrigger.update()) {
-    trigFire = (switchFireTrigger.read());
+
+    // Set this value for the display loop later
+    trigFireOpen = (switchFireTrigger.read() == HIGH);
+
+    // On falling signal (user is just starting to close the switch, so pulling
+    // the trigger to fire), set the burst counter if we're in that mode.
+    if (switchFireTrigger.fell() && burstCounter <= 0) {
+      if (fireMode == MODE_SEMI_AUTO) {
+        burstCounter = 1;
+      } else if (fireMode == MODE_BURST) {
+        burstCounter = 3;
+      }
+
+    // On the rising signal (user is letting go of the trigger and it's just
+    // opening again), reset burst counter to zero.
+    } else if (switchFireTrigger.rose() && burstCounter > 0) {
+      burstCounter = 0;
+    }
+
+    // Change motor states if needed
     setMotorState();
   }
 }
@@ -231,7 +336,7 @@ void irq_sw_fire() {
  */
 void irq_sw_accel() {
   if (switchAccelTrigger.update()) {
-    trigAccel = (switchAccelTrigger.read());
+    trigAccelOpen = (switchAccelTrigger.read() == HIGH);
     setMotorState();
   }
 }

@@ -16,26 +16,20 @@
 #include <avr/pgmspace.h>
 #include <Arduino.h>
 
+#define _VNH5019_TEST_SAFE_
+
 //
 // Motor States
 //
 // The motor's going to be in one of this set of states throughout our control
-// over it.
+// over it. No, I don't care about the FWD<->REV change being missed. Ur dumb.
 //
 typedef enum {
   VNH5019_FREEWHEEL,
-  VNH5019_A_TO_B,
-  VNH5019_B_TO_A,
+  VNH5019_GO,
   VNH5019_BRAKE_VCC,
   VNH5019_BRAKE_GND,
 } VNH5019_state_t;
-
-// Important aliases (given that they're a pretty big semantic leap that may
-// not apply in your use case, but this is my petty kingdom and have choosen
-// thus; but, it's open source, so feel free to Make It Do Your Thing, whatever
-// that might be).
-const VNH5019_state_t VNH5019_FWD = VNH5019_A_TO_B;
-const VNH5019_state_t VNH5019_REV = VNH5019_B_TO_A;
 
 //
 // Controller object, one per motor instance (set of pins--probably could
@@ -71,6 +65,10 @@ class VNH5019 {
 
     VNH5019_state_t getMotorState();
 
+    bool isGoing();
+    bool isFreewheeling();
+    bool isBraking();
+
   private:
 
     // Hard coding these because not exactly something to dick around with
@@ -91,6 +89,10 @@ class VNH5019 {
 
     // High-level "state" of the motor
     VNH5019_state_t motor_state;
+
+#ifdef _VNH5019_TEST_SAFE_
+    void _test_safe();
+#endif
 
 };
 

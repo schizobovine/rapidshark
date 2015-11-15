@@ -17,6 +17,7 @@
 VNH5019::VNH5019() {
   this->curr_speed = 0;
   this->reverse = false;
+  this->motor_state = VNH5019_FREEWHEEL;
 }
 
 VNH5019::VNH5019(int8_t a, int8_t b, int8_t pwm) {
@@ -57,29 +58,6 @@ void VNH5019::init(int8_t a, int8_t b, int8_t pwm, bool rev) {
 
 /**
  * go() - Makes wheels go spiny
- */
-void VNH5019::go() {
-
-  // Set direction
-  pinMode(this->pin_a, OUTPUT);
-  pinMode(this->pin_b, OUTPUT);
-  if (this->reverse) {
-    digitalWrite(this->pin_a, LOW);
-    digitalWrite(this->pin_b, HIGH);
-  } else {
-    digitalWrite(this->pin_a, HIGH);
-    digitalWrite(this->pin_b, LOW);
-  }
-
-  // Set output speed
-  pinMode(this->pin_pwm, OUTPUT);
-  analogWrite(this->pin_pwm, this->curr_speed);
-
-
-}
-
-/**
- * go() - Makes wheels go spiny
  *
  * @param speed - Set PWM to this value before turning on motor(s)
  *
@@ -90,39 +68,95 @@ void VNH5019::go(uint8_t speed) {
 }
 
 /**
+ * go() - Makes wheels go spiny
+ */
+void VNH5019::go() {
+
+  if (this->motor_state != VNH5019_GO) {
+
+    this->motor_state = VNH5019_GO;
+
+#ifdef _VNH5019_TEST_SAFE_
+    this->_test_safe();
+#else
+
+    pinMode(this->pin_a, OUTPUT);
+    pinMode(this->pin_b, OUTPUT);
+
+    // Set direction
+    if (this->reverse) {
+      digitalWrite(this->pin_a, LOW);
+      digitalWrite(this->pin_b, HIGH);
+    } else {
+      digitalWrite(this->pin_a, HIGH);
+      digitalWrite(this->pin_b, LOW);
+    }
+
+    // Set output speed
+    pinMode(this->pin_pwm, OUTPUT);
+    analogWrite(this->pin_pwm, this->curr_speed);
+
+#endif
+
+  }
+
+}
+
+/**
  * freewheel() - Sorta like stop, but by coasting instead of reverse polarity
- * breaking.
+ * braking.
  */
 void VNH5019::freewheel() {
-  pinMode(this->pin_a, INPUT);
-  pinMode(this->pin_b, INPUT);
-  digitalWrite(this->pin_a, LOW);
-  digitalWrite(this->pin_b, LOW);
-  analogWrite(this->pin_pwm, 0);
+  if (this->motor_state != VNH5019_FREEWHEEL) {
+    this->motor_state = VNH5019_FREEWHEEL;
+#ifdef _VNH5019_TEST_SAFE_
+    this->_test_safe();
+#else
+    pinMode(this->pin_a, INPUT);
+    pinMode(this->pin_b, INPUT);
+    digitalWrite(this->pin_a, LOW);
+    digitalWrite(this->pin_b, LOW);
+    analogWrite(this->pin_pwm, 0);
+#endif
+  }
 }
 
 /**
  * brake_vcc() - Stops motors going, dumping the generated power to VCC (and
- * theoretically charging the battery.
+ * theoretically charging the battery).
  */
 void VNH5019::brake_vcc() {
-  pinMode(this->pin_a, OUTPUT);
-  pinMode(this->pin_b, OUTPUT);
-  digitalWrite(this->pin_a, HIGH);
-  digitalWrite(this->pin_b, HIGH);
-  analogWrite(this->pin_pwm, this->curr_speed);
+  if (this->motor_state != VNH5019_BRAKE_VCC) {
+    this->motor_state = VNH5019_BRAKE_VCC;
+#ifdef _VNH5019_TEST_SAFE_
+    this->_test_safe();
+#else
+    pinMode(this->pin_a, OUTPUT);
+    pinMode(this->pin_b, OUTPUT);
+    digitalWrite(this->pin_a, HIGH);
+    digitalWrite(this->pin_b, HIGH);
+    analogWrite(this->pin_pwm, this->curr_speed);
+#endif
+  }
 }
 
 /**
- * brake_vcc() - Stops motors going, dumping the generated power to GND (and
+ * brake_gnd() - Stops motors going, dumping the generated power to GND (and
  * thus using the motor as a heat-sink for the energy.
  */
 void VNH5019::brake_gnd() {
-  pinMode(this->pin_a, OUTPUT);
-  pinMode(this->pin_b, OUTPUT);
-  digitalWrite(this->pin_a, LOW);
-  digitalWrite(this->pin_b, LOW);
-  analogWrite(this->pin_pwm, this->curr_speed);
+  if (this->motor_state != VNH5019_BRAKE_GND) {
+#ifdef _VNH5019_TEST_SAFE_
+    this->_test_safe();
+#else
+    this->motor_state = VNH5019_BRAKE_GND;
+    pinMode(this->pin_a, OUTPUT);
+    pinMode(this->pin_b, OUTPUT);
+    digitalWrite(this->pin_a, LOW);
+    digitalWrite(this->pin_b, LOW);
+    analogWrite(this->pin_pwm, this->curr_speed);
+#endif
+  }
 }
 
 /**
@@ -135,6 +169,21 @@ void VNH5019::brake(bool regenerative=false) {
     this->brake_vcc();
   }
 }
+
+/**
+ * _test_safe() - Put motor unconditionally into freewheel mode for testing the
+ * motor states w/o actually energizing them. Explicity does not set or check
+ * state. Don't use this.
+ */
+#ifdef _VNH5019_TEST_SAFE_
+void VNH5019::_test_safe() {
+  pinMode(this->pin_a, INPUT);
+  pinMode(this->pin_b, INPUT);
+  digitalWrite(this->pin_a, LOW);
+  digitalWrite(this->pin_b, LOW);
+  analogWrite(this->pin_pwm, 0);
+}
+#endif
 
 ////////////////////////////////////////////////////////////////////////
 // GETTERS & SETTERS
@@ -166,4 +215,16 @@ void VNH5019::setPins(int8_t a, int8_t b, int8_t pwm) {
 
 VNH5019_state_t VNH5019::getMotorState() {
   return this->motor_state;
+}
+
+bool VNH5019::isGoing() {
+  return (this->motor_state == VNH5019_GO);
+}
+
+bool VNH5019::isFreewheeling() {
+  return (this->motor_state == VNH5019_FREEWHEEL);
+}
+
+bool VNH5019::isBraking() {
+  return ((this->motor_state == VNH5019_BRAKE_VCC) || (this->motor_state == VNH5019_BRAKE_GND));
 }
