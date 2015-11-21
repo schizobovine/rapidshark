@@ -66,10 +66,12 @@ uint8_t ammoCounterTotal = 37;
 volatile uint8_t ammoCounter = ammoCounterTotal;
 
 // Current fire control mode
-fire_mode_t fireMode = MODE_FULL_AUTO;
+volatile fire_mode_t fireMode = MODE_FULL_AUTO;
 
 // Shots left to fire in burst mode
 volatile uint8_t burstCounter = 0;
+
+volatile pusher_state_t debug_pusher_state = PUSHER_UNDEF;
 
 ////////////////////////////////////////////////////////////////////////
 // "HALPING" FUNCTIONS
@@ -99,8 +101,6 @@ void refreshDisplay() {
   displayLabel(30, 48, "CLIP", (IS_CLIP_INSERTED));
 
   display.setCursor(30, 56);
-  display.print("MODE");
-  display.setCursor(60, 56);
   switch (fireMode) {
     case MODE_SEMI_AUTO:
       display.print("SEMI");
@@ -118,6 +118,31 @@ void refreshDisplay() {
 
   displayLabel(60, 40, "MACC", (motor_accel.isGoing()));
   displayLabel(60, 48, "MPSH", (motor_push.isGoing()));
+
+  display.setCursor(60, 56);
+  switch (debug_pusher_state) {
+    case PUSHER_EXTENDED:
+      display.print("EXT");
+      break;
+    case PUSHER_FIRE_TRIG_OPEN:
+      display.print("OPEN");
+      break;
+    case PUSHER_FIRE_MODE_AUTO:
+      display.print("AUTO");
+      break;
+    case PUSHER_FIRE_COUNTER:
+      display.print("CNT");
+      break;
+    case PUSHER_OTHER:
+      display.print("OTHER");
+      break;
+    case PUSHER_UNDEF:
+      display.print("UNDEF");
+      break;
+    default:
+      display.print("???");
+      break;
+  }
 
   display.display();
 
@@ -171,12 +196,15 @@ void setMotorState() {
  */
 void setPusherMotorState() {
   
+  debug_pusher_state = PUSHER_UNDEF;
+
   // If pusher switch is open, this means it's extended outward and needs to be
   // retracted no matter what;
 
   if (IS_PUSHER_EXTENDED) {
 
     motor_push.go();
+    debug_pusher_state = PUSHER_EXTENDED;
 
   // Pusher switch is assumed to be closed for the other states.
 
@@ -185,6 +213,7 @@ void setPusherMotorState() {
   } else if (IS_FIRE_TRIG_OPEN) {
 
     motor_push.brake_gnd();
+    debug_pusher_state = PUSHER_FIRE_TRIG_OPEN;
 
   // Trigger held down, so activate depending on fire control mode and
   // potentially burst counter.
@@ -193,14 +222,17 @@ void setPusherMotorState() {
     // Keep plugging away for full auto mode
     if (fireMode == MODE_FULL_AUTO) {
       motor_push.go();
+      debug_pusher_state = PUSHER_FIRE_MODE_AUTO;
 
     // For burst/semi, only activate if we have shots remaining
     } else if (burstCounter > 0) {
       motor_push.go();
+      debug_pusher_state = PUSHER_FIRE_COUNTER;
 
     // Otherwise deactivate
     } else {
       motor_push.brake_gnd();
+      debug_pusher_state = PUSHER_OTHER;
     }
 
   }

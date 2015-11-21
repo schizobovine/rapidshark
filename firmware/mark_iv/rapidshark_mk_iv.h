@@ -60,11 +60,11 @@
 // Helper macros for readability
 //
 #define IS_PUSHER_EXTENDED  (switchPusher.read()==HIGH)
-#define IS_PUSHER_RETRACTED (switchPusher.read()!=HIGH)
+#define IS_PUSHER_RETRACTED (switchPusher.read()==LOW)
 #define IS_ACC_TRIG_OPEN    (switchAccelTrigger.read()==HIGH)
-#define IS_ACC_TRIG_CLOSED  (switchAccelTrigger.read()!=HIGH)
-#define IS_FIRE_TRIG_OPEN    (switchFireTrigger.read()==HIGH)
-#define IS_FIRE_TRIG_CLOSED  (switchFireTrigger.read()!=HIGH)
+#define IS_ACC_TRIG_CLOSED  (switchAccelTrigger.read()==LOW)
+#define IS_FIRE_TRIG_OPEN   (switchFireTrigger.read()==HIGH)
+#define IS_FIRE_TRIG_CLOSED (switchFireTrigger.read()==LOW)
 #define IS_CLIP_INSERTED    (switchClipDetect.read()==HIGH)
 
 ////////////////////////////////////////////////////////////////////////
@@ -77,6 +77,15 @@ typedef enum {
   MODE_BURST,
   MODE_FULL_AUTO,
 } fire_mode_t;
+
+typedef enum {
+  PUSHER_EXTENDED,
+  PUSHER_FIRE_TRIG_OPEN,
+  PUSHER_FIRE_MODE_AUTO,
+  PUSHER_FIRE_COUNTER,
+  PUSHER_OTHER,
+  PUSHER_UNDEF,
+} pusher_state_t;
 
 ////////////////////////////////////////////////////////////////////////
 // PROTOTYPES

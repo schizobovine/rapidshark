@@ -88,7 +88,7 @@ class VNH5019 {
     bool reverse = false;
 
     // High-level "state" of the motor
-    VNH5019_state_t motor_state;
+    volatile VNH5019_state_t motor_state;
 
 #ifdef _VNH5019_TEST_SAFE_
     void _test_safe();
