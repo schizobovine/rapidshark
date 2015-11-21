@@ -451,11 +451,11 @@ void setup() {
 
 void loop() {
 
-  // Only bother updating the display if anything's changed
-  //if (needsRefresh) {
-    //needsRefresh = false;
-    refreshDisplay();
-  //}
+  // Change motor states if needed
+  setMotorState();
+
+  // Update display
+  refreshDisplay();
 
   // Put CPU to sleep until an event (likely one of our timer or pin change
   // interrupts) wakes it
