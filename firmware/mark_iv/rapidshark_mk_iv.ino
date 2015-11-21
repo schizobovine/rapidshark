@@ -58,14 +58,8 @@ Bounce switchClipDetect;
 Bounce switchFireTrigger;
 Bounce switchAccelTrigger;
 Bounce buttonX;
-Bounce buttonY;
-Bounce buttonZ;
-
-// Important state variables
-volatile bool isPusherSwitchOpen = false;
-volatile bool isClipDetected = false;
-volatile bool trigFireOpen = false;
-volatile bool trigAccelOpen = false;
+//Bounce buttonY;
+//Bounce buttonZ;
 
 // Current & total ammo counters
 uint8_t ammoCounterTotal = 37;
@@ -98,11 +92,11 @@ void refreshDisplay() {
 
   display.setTextSize(1);
 
-  displayLabel( 0, 40, "ACC" , (trigAccelOpen));
-  displayLabel( 0, 48, "FIRE", (trigFireOpen));
+  displayLabel( 0, 40, "ACC" , (IS_ACC_TRIG_CLOSED));
+  displayLabel( 0, 48, "FIRE", (IS_FIRE_TRIG_CLOSED));
   displayLabel( 0, 56, "PUSH", (IS_PUSHER_EXTENDED));
   displayLabel(30, 40, "DART", (dartDetector.read()));
-  displayLabel(30, 48, "CLIP", (isClipDetected));
+  displayLabel(30, 48, "CLIP", (IS_CLIP_INSERTED));
 
   display.setCursor(30, 56);
   display.print("MODE");
@@ -156,10 +150,10 @@ void displayTextFlipped() {
  * setMotorState() 
  *
  * Called to figure out if motors should freewheel, brake or go, all based on
- * current system state (isPusherSwitchOpen, fire/accel triggers, and finally
- * fire control mode all factor in). In the stock Rapid Strike, this is handled
- * via eletromechanics such that the three switches comprise the entire state
- * machine. We have to simulate that here.
+ * current system state (is the pusher switch open, fire/accel triggers, and
+ * finally fire control mode all factor in). In the stock Rapid Strike, this is
+ * handled via eletromechanics such that the three switches comprise the entire
+ * state machine. We have to simulate that here.
  *
  */
 void setMotorState() {
@@ -171,7 +165,7 @@ void setMotorState() {
  * setPusherMotorState() 
  *
  * Called to figure out if pusher should brake or go, based on current system
- * state (isPusherSwitchOpen, fire/accel triggers, and finally fire control
+ * state (is pusher extended, fire/accel triggers, and finally fire control
  * mode all factor in).
  *
  */
@@ -188,7 +182,7 @@ void setPusherMotorState() {
 
   // If the fire trigger is open, user has let go of it, and so yank brake to
   // stop pusher and thus stop firing.
-  } else if (trigFireOpen) {
+  } else if (IS_FIRE_TRIG_OPEN) {
 
     motor_push.brake_gnd();
 
@@ -224,11 +218,11 @@ void setPusherMotorState() {
 void setAccelMotorState() {
 
   // If the acceleration trigger is being pushed, just go
-  if (!trigAccelOpen) {
+  if (IS_ACC_TRIG_CLOSED) {
     motor_accel.go();
 
   // If the fire trigger is being pushed, just go IFF we're supposed to be firing
-  } else if (!trigFireOpen) {
+  } else if (IS_FIRE_TRIG_CLOSED) {
 
     // Keep plugging away for full auto mode
     if (fireMode == MODE_FULL_AUTO) {
@@ -273,9 +267,6 @@ void irq_sw_push() {
   // Read switch value and if and only if it's changed, change some state
   if (switchPusher.update()) {
 
-    // Read switch value for display loop later on
-    isPusherSwitchOpen = (switchPusher.read() == HIGH);
-
     // If the pusher limit switch is closing, the arm is almost full retracted,
     // meaning we've just completed a single fire cycle. In limited fire modes,
     // this means we should mark off one shot taken.
@@ -295,9 +286,7 @@ void irq_sw_push() {
  * irq_sw_clip - Called when the clip insert detection switch changed
  */
 void irq_sw_clip() {
-  if (switchClipDetect.update()) {
-    isClipDetected = (switchClipDetect.read() == LOW);
-  }
+  switchClipDetect.update();
 }
 
 /*
@@ -307,9 +296,6 @@ void irq_sw_fire() {
 
   // Read switch value and if and only if it's changed, change some state
   if (switchFireTrigger.update()) {
-
-    // Set this value for the display loop later
-    trigFireOpen = (switchFireTrigger.read() == HIGH);
 
     // On falling signal (user is just starting to close the switch, so pulling
     // the trigger to fire), set the burst counter if we're in that mode.
@@ -336,7 +322,6 @@ void irq_sw_fire() {
  */
 void irq_sw_accel() {
   if (switchAccelTrigger.update()) {
-    trigAccelOpen = (switchAccelTrigger.read() == HIGH);
     setMotorState();
   }
 }
@@ -345,25 +330,22 @@ void irq_sw_accel() {
  * irq_butt_x - Called when user presses the X button (down only)
  */
 void irq_butt_x() {
-  if (buttonX.update()) {
-  }
+  buttonX.update();
 }
 
 /*
  * irq_butt_y - Called when user presses the Y button (down only)
  */
-void irq_butt_y() {
-  if (buttonY.update()) {
-  }
-}
+//void irq_butt_y() {
+//  buttonY.update();
+//}
 
 /*
  * irq_butt_z - Called when user presses the Z button (down only)
  */
-void irq_butt_z() {
-  if (buttonZ.update()) {
-  }
-}
+//void irq_butt_z() {
+//  buttonZ.update();
+//}
 
 ////////////////////////////////////////////////////////////////////////
 // STARTUP CODE
@@ -379,8 +361,8 @@ void init_irq() {
   enableInterrupt(PIN_SW_FIRE,      irq_sw_fire,     CHANGE);
   enableInterrupt(PIN_SW_ACCEL,     irq_sw_accel,    CHANGE);
   enableInterrupt(PIN_BUTT_Z,       irq_butt_x,      CHANGE);
-  enableInterrupt(PIN_BUTT_Y,       irq_butt_y,      CHANGE);
-  enableInterrupt(PIN_BUTT_X,       irq_butt_z,      CHANGE);
+  //enableInterrupt(PIN_BUTT_Y,       irq_butt_y,      CHANGE);
+  //enableInterrupt(PIN_BUTT_X,       irq_butt_z,      CHANGE);
 }
 
 /*
@@ -393,8 +375,8 @@ void init_bouncers() {
   switchFireTrigger.attach(PIN_SW_FIRE, INPUT_PULLUP);
   switchAccelTrigger.attach(PIN_SW_ACCEL, INPUT_PULLUP);
   buttonX.attach(PIN_BUTT_Z, INPUT_PULLUP);
-  buttonY.attach(PIN_BUTT_Y, INPUT_PULLUP);
-  buttonZ.attach(PIN_BUTT_X, INPUT_PULLUP);
+  //buttonY.attach(PIN_BUTT_Y, INPUT_PULLUP);
+  //buttonZ.attach(PIN_BUTT_X, INPUT_PULLUP);
 }
 
 /*
