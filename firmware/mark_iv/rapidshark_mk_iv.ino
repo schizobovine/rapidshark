@@ -345,7 +345,11 @@ void irq_butt_y() {
  * irq_butt_z - Called when user presses the Z button (down only)
  */
 void irq_butt_z() {
-  buttonZ.update();
+  if (buttonZ.update()) {
+    if (buttonZ.rose()) {
+      fireMode.nextMode();
+    }
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////
