@@ -32,8 +32,8 @@
 #define PIN_PUSH_PWM    11
 #define PIN_PUSH_B      12
 #define PIN_BUTT_Z      A0
-//#define PIN_BUTT_Y      A1
-//#define PIN_BUTT_X      A2
+#define PIN_BUTT_Y      A1
+#define PIN_BUTT_X      A2
 #define PIN_DISP_RST    A3
 
 //
@@ -81,8 +81,8 @@ void irq_sw_clip();
 void irq_sw_fire();
 void irq_sw_accel();
 void irq_butt_x();
-//void irq_butt_y();
-//void irq_butt_z();
+void irq_butt_y();
+void irq_butt_z();
 
 void displayLabel(uint8_t x, uint8_t y, const char *text, bool invert);
 void displayTextNormal();
