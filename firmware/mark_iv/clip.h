@@ -28,13 +28,13 @@ const clip_type_t CLIP_DEFAULT = CLIP_TYPE_36;
 //
 // Clip manager
 //
-class Clip {
+class AmmoClip {
 
   public:
 
     // Constructors
-    Clip(clip_type_t type);
-    Clip();
+    AmmoClip(clip_type_t type);
+    AmmoClip();
 
     // Get/set clip type
     clip_type_t getType();

@@ -10,19 +10,19 @@
 
 #include "clip.h"
 
-Clip::Clip(clip_type_t type) {
+AmmoClip::AmmoClip(clip_type_t type) {
   this->setType(type);
 }
 
-Clip::Clip() {
-  Clip(CLIP_DEFAULT);
+AmmoClip::AmmoClip() {
+  AmmoClip(CLIP_DEFAULT);
 }
 
-clip_type_t Clip::getType() {
+clip_type_t AmmoClip::getType() {
   return this->_type;
 }
 
-clip_type_t Clip::setType(clip_type_t type) {
+clip_type_t AmmoClip::setType(clip_type_t type) {
 
   this->_type = type;
   this->ammo_max = CLIP_TYPE_TO_MAX_COUNT(this->_type);
@@ -31,7 +31,7 @@ clip_type_t Clip::setType(clip_type_t type) {
   return this->_type;
 }
 
-clip_type_t Clip::nextType() {
+clip_type_t AmmoClip::nextType() {
 
   switch (this->getType()) {
     case CLIP_TYPE_18:
@@ -48,22 +48,22 @@ clip_type_t Clip::nextType() {
   return this->_type;
 }
 
-uint8_t Clip::getMax() {
+uint8_t AmmoClip::getMax() {
   return this->ammo_max;
 }
 
-uint8_t Clip::getCurrent() {
+uint8_t AmmoClip::getCurrent() {
   return this->ammo_current;
 }
 
-uint8_t Clip::decrement() {
+uint8_t AmmoClip::decrement() {
   if (this->ammo_current > 0) {
     this->ammo_current--;
   }
   return this->ammo_current;
 }
 
-uint8_t Clip::reset() {
+uint8_t AmmoClip::reset() {
   this->ammo_current = this->ammo_max;
   return this->ammo_current;
 }
