@@ -329,7 +329,11 @@ void irq_sw_accel() {
  * irq_butt - Called when user presses the button (down only)
  */
 void irq_butt() {
-  butt.update();
+  if (butt.update()) {
+    if (butt.rose()) {
+      fireMode.nextMode();
+    }
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -423,6 +427,5 @@ void loop() {
   // interrupts) wakes it
   set_sleep_mode(SLEEP_MODE_IDLE);
   sleep_mode();
-  //delay(100);
 
 }
