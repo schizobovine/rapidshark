@@ -75,10 +75,6 @@ void VNH5019::go() {
   if (this->motor_state != VNH5019_GO) {
     this->motor_state = VNH5019_GO;
 
-#ifdef _VNH5019_TEST_SAFE_
-    this->_test_safe();
-#else
-
     pinMode(this->pin_a, OUTPUT);
     pinMode(this->pin_b, OUTPUT);
 
@@ -95,8 +91,6 @@ void VNH5019::go() {
     pinMode(this->pin_pwm, OUTPUT);
     analogWrite(this->pin_pwm, this->curr_speed);
 
-#endif
-
   }
 
 }
@@ -109,15 +103,11 @@ void VNH5019::freewheel() {
   if (this->motor_state != VNH5019_FREEWHEEL) {
     this->motor_state = VNH5019_FREEWHEEL;
 
-#ifdef _VNH5019_TEST_SAFE_
-    this->_test_safe();
-#else
     pinMode(this->pin_a, INPUT);
     pinMode(this->pin_b, INPUT);
     digitalWrite(this->pin_a, LOW);
     digitalWrite(this->pin_b, LOW);
     analogWrite(this->pin_pwm, 0);
-#endif
 
   }
 }
@@ -130,15 +120,11 @@ void VNH5019::brake_vcc() {
   if (this->motor_state != VNH5019_BRAKE_VCC) {
     this->motor_state = VNH5019_BRAKE_VCC;
 
-#ifdef _VNH5019_TEST_SAFE_
-    this->_test_safe();
-#else
     pinMode(this->pin_a, OUTPUT);
     pinMode(this->pin_b, OUTPUT);
     digitalWrite(this->pin_a, HIGH);
     digitalWrite(this->pin_b, HIGH);
     analogWrite(this->pin_pwm, this->brake_speed);
-#endif
 
   }
 }
@@ -151,15 +137,11 @@ void VNH5019::brake_gnd() {
   if (this->motor_state != VNH5019_BRAKE_GND) {
     this->motor_state = VNH5019_BRAKE_GND;
 
-#ifdef _VNH5019_TEST_SAFE_
-    this->_test_safe();
-#else
     pinMode(this->pin_a, OUTPUT);
     pinMode(this->pin_b, OUTPUT);
     digitalWrite(this->pin_a, LOW);
     digitalWrite(this->pin_b, LOW);
     analogWrite(this->pin_pwm, this->brake_speed);
-#endif
 
   }
 }
@@ -175,20 +157,6 @@ void VNH5019::brake(bool regenerative=false) {
   }
 }
 
-/**
- * _test_safe() - Put motor unconditionally into freewheel mode for testing the
- * motor states w/o actually energizing them. Explicity does not set or check
- * state. Don't use this.
- */
-#ifdef _VNH5019_TEST_SAFE_
-void VNH5019::_test_safe() {
-  pinMode(this->pin_a, INPUT);
-  pinMode(this->pin_b, INPUT);
-  digitalWrite(this->pin_a, LOW);
-  digitalWrite(this->pin_b, LOW);
-  analogWrite(this->pin_pwm, 0);
-}
-#endif
 
 ////////////////////////////////////////////////////////////////////////
 // GETTERS & SETTERS
