@@ -253,10 +253,8 @@ void setAccelMotorState() {
  * irq_dart_detect - Called when the IR sensor gets occluded by a dart.
  */
 void irq_dart_detect() {
-  if (dartDetector.update()) {
-    if (dartDetector.fell()) {
-      ammo_clip.decrement();
-    }
+  if (dartDetector.update() && dartDetector.fell()) {
+    ammo_clip.decrement();
   }
 }
 
@@ -287,10 +285,8 @@ void irq_sw_push() {
  * irq_sw_clip - Called when the clip insert detection switch changed
  */
 void irq_sw_clip() {
-  if (switchClipDetect.update()) {
-    if (switchClipDetect.fell()) {
-      ammo_clip.reset();
-    }
+  if (switchClipDetect.update() && switchClipDetect.fell()) {
+    ammo_clip.reset();
   }
 }
 
@@ -364,9 +360,9 @@ void irq_butt_z() {
  * init_irq - Setup interrupt handling routines
  */
 void init_irq() {
-  enableInterrupt(PIN_DART_DETECT,  irq_dart_detect, CHANGE);
+  enableInterrupt(PIN_DART_DETECT,  irq_dart_detect, FALLING);
   enableInterrupt(PIN_SW_PUSH,      irq_sw_push,     CHANGE);
-  enableInterrupt(PIN_SW_CLIP,      irq_sw_clip,     CHANGE);
+  enableInterrupt(PIN_SW_CLIP,      irq_sw_clip,     FALLING);
   enableInterrupt(PIN_SW_FIRE,      irq_sw_fire,     CHANGE);
   enableInterrupt(PIN_SW_ACCEL,     irq_sw_accel,    CHANGE);
   enableInterrupt(PIN_BUTT_X,       irq_butt_x,      CHANGE);
@@ -378,14 +374,14 @@ void init_irq() {
  * init_bouncers - Setup debouncing objects
  */
 void init_bouncers() {
-  dartDetector.attach(PIN_DART_DETECT, INPUT_PULLUP);
-  switchPusher.attach(PIN_SW_PUSH, INPUT_PULLUP);
-  switchClipDetect.attach(PIN_SW_CLIP, INPUT_PULLUP);
-  switchFireTrigger.attach(PIN_SW_FIRE, INPUT_PULLUP);
-  switchAccelTrigger.attach(PIN_SW_ACCEL, INPUT_PULLUP);
-  buttonX.attach(PIN_BUTT_X, INPUT_PULLUP);
-  buttonY.attach(PIN_BUTT_Y, INPUT_PULLUP);
-  buttonZ.attach(PIN_BUTT_Z, INPUT_PULLUP);
+  dartDetector      .attach(PIN_DART_DETECT, INPUT_PULLUP, DEBOUNCE_DART_DETECT);
+  switchPusher      .attach(PIN_SW_PUSH,     INPUT_PULLUP, DEBOUNCE_PUSH);
+  switchClipDetect  .attach(PIN_SW_CLIP,     INPUT_PULLUP, DEBOUNCE_CLIP);
+  switchFireTrigger .attach(PIN_SW_FIRE,     INPUT_PULLUP, DEBOUNCE_FIRE);
+  switchAccelTrigger.attach(PIN_SW_ACCEL,    INPUT_PULLUP, DEBOUNCE_ACCEL);
+  buttonX           .attach(PIN_BUTT_X,      INPUT_PULLUP, DEBOUNCE_BUTT_X);
+  buttonY           .attach(PIN_BUTT_Y,      INPUT_PULLUP, DEBOUNCE_BUTT_Y);
+  buttonZ           .attach(PIN_BUTT_Z,      INPUT_PULLUP, DEBOUNCE_BUTT_Z);
 }
 
 /*

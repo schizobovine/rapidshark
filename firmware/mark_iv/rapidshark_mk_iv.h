@@ -56,6 +56,19 @@
 #define BURST_COUNT 3
 
 //
+// Debounce intervals (in ms)
+//
+
+#define DEBOUNCE_DART_DETECT  (10)
+#define DEBOUNCE_PUSH         (1)
+#define DEBOUNCE_CLIP         (10)
+#define DEBOUNCE_FIRE         (10)
+#define DEBOUNCE_ACCEL        (10)
+#define DEBOUNCE_BUTT_Z       (10)
+#define DEBOUNCE_BUTT_Y       (10)
+#define DEBOUNCE_BUTT_X       (10)
+
+//
 // Helper macros for readability
 //
 #define IS_PUSHER_EXTENDED  (switchPusher.read()==HIGH)
