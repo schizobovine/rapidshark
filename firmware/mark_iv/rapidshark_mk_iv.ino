@@ -395,7 +395,7 @@ void init_motors() {
   motor_accel.init();
   motor_accel.setSpeed(MOTOR_ACCEL_SPEED);
   motor_push.init();
-  motor_push.setSpeed(MOTOR_PUSH_SPEED_FAST);
+  motor_push.setSpeed(MOTOR_PUSH_SPEED);
 }
 
 /*

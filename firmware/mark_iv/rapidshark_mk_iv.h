@@ -50,9 +50,8 @@
 // Settings
 //
 
-#define MOTOR_ACCEL_SPEED 32
-#define MOTOR_PUSH_SPEED_SLOW 32
-#define MOTOR_PUSH_SPEED_FAST 32
+#define MOTOR_ACCEL_SPEED 128
+#define MOTOR_PUSH_SPEED  128
 
 #define BURST_COUNT 3
 

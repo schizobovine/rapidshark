@@ -51,8 +51,8 @@ class AmmoClip {
 
   private:
 
-    volatile clip_type_t _type;
-    volatile uint8_t ammo_max;
+    clip_type_t _type;
+    uint8_t ammo_max;
     volatile uint8_t ammo_current;
 
 };
