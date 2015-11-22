@@ -16,8 +16,6 @@
 #include <avr/pgmspace.h>
 #include <Arduino.h>
 
-#define _VNH5019_TEST_SAFE_
-
 //
 // Motor States
 //

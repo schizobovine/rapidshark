@@ -28,6 +28,7 @@
 
 #include "vnh5019.h"
 #include "firemode.h"
+//#include "clip.h"
 #include "rapidshark_mk_iv.h"
 
 #define SERIAL_DEBUG 1
@@ -63,8 +64,7 @@ Bounce buttonY;
 Bounce buttonZ;
 
 // Current & total ammo counters
-uint8_t ammoCounterTotal = 37;
-volatile uint8_t ammoCounter = ammoCounterTotal;
+//Clip clip = Clip();
 
 // Current fire control mode
 FireMode fireMode(MODE_FULL_AUTO);
@@ -89,7 +89,7 @@ void refreshDisplay() {
   displayTextNormal();
   display.setTextSize(4);
   display.setCursor(40, 0);
-  display.print("37");
+  //display.print((uint16_t)clip.getCurrent());
 
   display.setTextSize(1);
 
@@ -254,8 +254,8 @@ void setAccelMotorState() {
  */
 void irq_dart_detect() {
   if (dartDetector.update()) {
-    if (dartDetector.fell() && ammoCounter > 0) {
-      ammoCounter--;
+    if (dartDetector.fell()) {
+      //clip.decrement();
     }
   }
 }
@@ -287,7 +287,11 @@ void irq_sw_push() {
  * irq_sw_clip - Called when the clip insert detection switch changed
  */
 void irq_sw_clip() {
-  switchClipDetect.update();
+  if (switchClipDetect.update()) {
+    if (switchClipDetect.fell()) {
+      //clip.reset();
+    }
+  }
 }
 
 /*
