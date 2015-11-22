@@ -58,7 +58,9 @@ Bounce switchPusher;
 Bounce switchClipDetect;
 Bounce switchFireTrigger;
 Bounce switchAccelTrigger;
-Bounce butt;
+Bounce buttonX;
+//Bounce buttonY;
+//Bounce buttonZ;
 
 // Current & total ammo counters
 uint8_t ammoCounterTotal = 37;
@@ -326,15 +328,25 @@ void irq_sw_accel() {
 }
 
 /*
- * irq_butt - Called when user presses the button (down only)
+ * irq_butt_x - Called when user presses the X button (down only)
  */
-void irq_butt() {
-  if (butt.update()) {
-    if (butt.rose()) {
-      fireMode.nextMode();
-    }
-  }
+void irq_butt_x() {
+  buttonX.update();
 }
+
+/*
+ * irq_butt_y - Called when user presses the Y button (down only)
+ */
+//void irq_butt_y() {
+//  buttonY.update();
+//}
+
+/*
+ * irq_butt_z - Called when user presses the Z button (down only)
+ */
+//void irq_butt_z() {
+//  buttonZ.update();
+//}
 
 ////////////////////////////////////////////////////////////////////////
 // STARTUP CODE
@@ -349,7 +361,9 @@ void init_irq() {
   enableInterrupt(PIN_SW_CLIP,      irq_sw_clip,     CHANGE);
   enableInterrupt(PIN_SW_FIRE,      irq_sw_fire,     CHANGE);
   enableInterrupt(PIN_SW_ACCEL,     irq_sw_accel,    CHANGE);
-  enableInterrupt(PIN_BUTT,         irq_butt,        CHANGE);
+  enableInterrupt(PIN_BUTT_Z,       irq_butt_x,      CHANGE);
+  //enableInterrupt(PIN_BUTT_Y,       irq_butt_y,      CHANGE);
+  //enableInterrupt(PIN_BUTT_X,       irq_butt_z,      CHANGE);
 }
 
 /*
@@ -361,7 +375,9 @@ void init_bouncers() {
   switchClipDetect.attach(PIN_SW_CLIP, INPUT_PULLUP);
   switchFireTrigger.attach(PIN_SW_FIRE, INPUT_PULLUP);
   switchAccelTrigger.attach(PIN_SW_ACCEL, INPUT_PULLUP);
-  butt.attach(PIN_BUTT, INPUT_PULLUP);
+  buttonX.attach(PIN_BUTT_Z, INPUT_PULLUP);
+  //buttonY.attach(PIN_BUTT_Y, INPUT_PULLUP);
+  //buttonZ.attach(PIN_BUTT_X, INPUT_PULLUP);
 }
 
 /*
