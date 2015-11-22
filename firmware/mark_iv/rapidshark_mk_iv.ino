@@ -50,8 +50,8 @@
 Adafruit_SSD1306 display(PIN_DISP_RST);
 
 // Motor controllers
-VNH5019 motor_accel = VNH5019(PIN_ACCEL_A, PIN_ACCEL_B, PIN_ACCEL_PWM);
-VNH5019 motor_push  = VNH5019(PIN_PUSH_A, PIN_PUSH_B, PIN_PUSH_PWM);
+VNH5019 motor_accel = VNH5019(PIN_ACCEL_A, PIN_ACCEL_B, PIN_ACCEL_PWM, MOTOR_ACCEL_SPEED);
+VNH5019 motor_push  = VNH5019(PIN_PUSH_A,  PIN_PUSH_B,  PIN_PUSH_PWM,  MOTOR_PUSH_SPEED);
 
 // Button/switch debouncers
 Bounce dartDetector;
@@ -124,8 +124,6 @@ void refreshDisplay() {
   display.setCursor(90, 48);
   display.print(motor_push.getSpeed(), DEC);
 
-  //display.setCursor(60, 56);
-
   display.display();
 
 }
@@ -191,7 +189,7 @@ void setPusherMotorState() {
   // stop pusher and thus stop firing.
   } else if (IS_FIRE_TRIG_OPEN) {
 
-    motor_push.brake_gnd();
+    motor_push.brake();
 
   // Trigger held down, so activate depending on fire control mode and
   // potentially burst counter.
@@ -207,7 +205,7 @@ void setPusherMotorState() {
 
     // Otherwise deactivate
     } else {
-      motor_push.brake_gnd();
+      motor_push.brake();
     }
 
   }
@@ -241,12 +239,12 @@ void setAccelMotorState() {
 
     // Otherwise deactivate
     } else {
-      motor_accel.brake_gnd();
+      motor_accel.brake();
     }
 
   // No triggers, no spinny
   } else {
-    motor_accel.brake_gnd();
+    motor_accel.brake();
   }
 
 }
@@ -395,9 +393,7 @@ void init_bouncers() {
  */
 void init_motors() {
   motor_accel.init();
-  motor_accel.setSpeed(MOTOR_ACCEL_SPEED);
   motor_push.init();
-  motor_push.setSpeed(MOTOR_PUSH_SPEED);
 }
 
 /*

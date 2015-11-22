@@ -16,7 +16,6 @@
 
 VNH5019::VNH5019() {
   this->curr_speed = 0;
-  this->reverse = false;
   this->motor_state = VNH5019_FREEWHEEL;
 }
 
@@ -25,10 +24,11 @@ VNH5019::VNH5019(int8_t a, int8_t b, int8_t pwm) {
   this->setPins(a, b, pwm);
 } 
 
-VNH5019::VNH5019(int8_t a, int8_t b, int8_t pwm, bool rev) {
-  VNH5019(a, b, pwm);
-  this->setReverse(rev);
-}
+VNH5019::VNH5019(int8_t a, int8_t b, int8_t pwm, uint8_t speed) {
+  VNH5019();
+  this->setPins(a, b, pwm);
+  this->setSpeed(speed);
+} 
 
 ////////////////////////////////////////////////////////////////////////
 // INITIALIZATION
@@ -42,30 +42,9 @@ void VNH5019::init() {
   this->freewheel();
 }
 
-void VNH5019::init(int8_t a, int8_t b, int8_t pwm) {
-  this->setPins(a, b, pwm);
-  this->init();
-}
-
-void VNH5019::init(int8_t a, int8_t b, int8_t pwm, bool rev) {
-  this->setReverse(rev);
-  this->init(a, b, pwm);
-}
-
 ////////////////////////////////////////////////////////////////////////
 // COMMANDS
 ////////////////////////////////////////////////////////////////////////
-
-/**
- * go() - Makes wheels go spiny
- *
- * @param speed - Set PWM to this value before turning on motor(s)
- *
- */
-void VNH5019::go(uint8_t speed) {
-  this->setSpeed(speed);
-  this->go();
-}
 
 /**
  * go() - Makes wheels go spiny
@@ -77,17 +56,8 @@ void VNH5019::go() {
 
     pinMode(this->pin_a, OUTPUT);
     pinMode(this->pin_b, OUTPUT);
-
-    // Set direction
-    if (this->reverse) {
-      digitalWrite(this->pin_a, LOW);
-      digitalWrite(this->pin_b, HIGH);
-    } else {
-      digitalWrite(this->pin_a, HIGH);
-      digitalWrite(this->pin_b, LOW);
-    }
-
-    // Set output speed
+    digitalWrite(this->pin_a, HIGH);
+    digitalWrite(this->pin_b, LOW);
     pinMode(this->pin_pwm, OUTPUT);
     analogWrite(this->pin_pwm, this->curr_speed);
 
@@ -102,61 +72,28 @@ void VNH5019::go() {
 void VNH5019::freewheel() {
   if (this->motor_state != VNH5019_FREEWHEEL) {
     this->motor_state = VNH5019_FREEWHEEL;
-
     pinMode(this->pin_a, INPUT);
     pinMode(this->pin_b, INPUT);
     digitalWrite(this->pin_a, LOW);
     digitalWrite(this->pin_b, LOW);
     analogWrite(this->pin_pwm, 0);
-
   }
 }
 
 /**
- * brake_vcc() - Stops motors going, dumping the generated power to VCC (and
- * theoretically charging the battery).
+ * brake() - Stops motors going, dumping the generated power to GND (and thus
+ * using the motor as a heat-sink for the energy.
  */
-void VNH5019::brake_vcc() {
-  if (this->motor_state != VNH5019_BRAKE_VCC) {
-    this->motor_state = VNH5019_BRAKE_VCC;
-
-    pinMode(this->pin_a, OUTPUT);
-    pinMode(this->pin_b, OUTPUT);
-    digitalWrite(this->pin_a, HIGH);
-    digitalWrite(this->pin_b, HIGH);
-    analogWrite(this->pin_pwm, this->brake_speed);
-
-  }
-}
-
-/**
- * brake_gnd() - Stops motors going, dumping the generated power to GND (and
- * thus using the motor as a heat-sink for the energy.
- */
-void VNH5019::brake_gnd() {
-  if (this->motor_state != VNH5019_BRAKE_GND) {
-    this->motor_state = VNH5019_BRAKE_GND;
-
+void VNH5019::brake() {
+  if (this->motor_state != VNH5019_BRAKE) {
+    this->motor_state = VNH5019_BRAKE;
     pinMode(this->pin_a, OUTPUT);
     pinMode(this->pin_b, OUTPUT);
     digitalWrite(this->pin_a, LOW);
     digitalWrite(this->pin_b, LOW);
     analogWrite(this->pin_pwm, this->brake_speed);
-
   }
 }
-
-/**
- * brake() - Stops motors going, by default using braking to ground.
- */
-void VNH5019::brake(bool regenerative=false) {
-  if (regenerative) {
-    this->brake_gnd();
-  } else {
-    this->brake_vcc();
-  }
-}
-
 
 ////////////////////////////////////////////////////////////////////////
 // GETTERS & SETTERS
@@ -169,15 +106,6 @@ uint8_t VNH5019::setSpeed(uint8_t new_speed) {
 
 uint8_t VNH5019::getSpeed() {
   return this->curr_speed;
-}
-
-bool VNH5019::setReverse(bool rev) {
-  this->reverse = rev;
-  return this->reverse;
-}
-
-bool VNH5019::getReverse() {
-  return this->reverse;
 }
 
 void VNH5019::setPins(int8_t a, int8_t b, int8_t pwm) {
@@ -199,5 +127,5 @@ bool VNH5019::isFreewheeling() {
 }
 
 bool VNH5019::isBraking() {
-  return ((this->motor_state == VNH5019_BRAKE_VCC) || (this->motor_state == VNH5019_BRAKE_GND));
+  return (this->motor_state == VNH5019_BRAKE);
 }
