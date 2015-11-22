@@ -72,7 +72,8 @@ class VNH5019 {
     // Hard coding these because not exactly something to dick around with
     // much. Be sure these outputs are within the range of the motor!
     const uint8_t min_speed = 0;
-    const uint8_t max_speed = 64;
+    const uint8_t max_speed = 128;
+    const uint8_t brake_speed = 255;
 
     // Pins in use; using -1 as a guard for unset pin values
     int8_t pin_a = -1;

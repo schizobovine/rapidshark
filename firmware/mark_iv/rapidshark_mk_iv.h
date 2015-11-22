@@ -51,7 +51,7 @@
 //
 
 #define MOTOR_ACCEL_SPEED 128
-#define MOTOR_PUSH_SPEED  128
+#define MOTOR_PUSH_SPEED  96
 
 #define BURST_COUNT 3
 

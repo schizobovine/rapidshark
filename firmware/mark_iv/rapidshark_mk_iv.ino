@@ -118,6 +118,12 @@ void refreshDisplay() {
   displayLabel(60, 40, "MACC", (motor_accel.isGoing()));
   displayLabel(60, 48, "MPSH", (motor_push.isGoing()));
 
+  display.setCursor(90, 40);
+  display.print(motor_accel.getSpeed(), DEC);
+
+  display.setCursor(90, 48);
+  display.print(motor_push.getSpeed(), DEC);
+
   //display.setCursor(60, 56);
 
   display.display();
@@ -235,12 +241,12 @@ void setAccelMotorState() {
 
     // Otherwise deactivate
     } else {
-      motor_accel.freewheel();
+      motor_accel.brake_gnd();
     }
 
   // No triggers, no spinny
   } else {
-    motor_accel.freewheel();
+    motor_accel.brake_gnd();
   }
 
 }

@@ -137,7 +137,7 @@ void VNH5019::brake_vcc() {
     pinMode(this->pin_b, OUTPUT);
     digitalWrite(this->pin_a, HIGH);
     digitalWrite(this->pin_b, HIGH);
-    analogWrite(this->pin_pwm, this->curr_speed);
+    analogWrite(this->pin_pwm, this->brake_speed);
 #endif
 
   }
@@ -158,7 +158,7 @@ void VNH5019::brake_gnd() {
     pinMode(this->pin_b, OUTPUT);
     digitalWrite(this->pin_a, LOW);
     digitalWrite(this->pin_b, LOW);
-    analogWrite(this->pin_pwm, this->curr_speed);
+    analogWrite(this->pin_pwm, this->brake_speed);
 #endif
 
   }
