@@ -101,6 +101,7 @@ void VNH5019::pushit() {
 
     // We've had at least one beat since last check, so drop PWM
     if ((this->last_step - now) >= this->interval) {
+      // TODO need to merge cycles and have some kind of boost indicator? fuck me
       this->go();
       /*
       uint8_t diff;
