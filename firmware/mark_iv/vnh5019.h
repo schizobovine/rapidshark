@@ -46,7 +46,10 @@ class VNH5019 {
 
     void go();
     void freewheel();
-    void brake(); // Dumps heat into motor?
+    void brake();
+
+    void pushit();
+    void stopit_maybe();
 
     uint8_t setSpeed(uint8_t new_speed);
     uint8_t getSpeed();
@@ -72,27 +75,16 @@ class VNH5019 {
     
     // PWM duty cycle
     volatile uint8_t curr_speed;
+    volatile uint8_t target_speed;
+
+    // Timestamps for speed boost
+    volatile uint16_t last_step;
+    uint16_t interval = 10;
 
     // Pins in use; using -1 as a guard for unset pin values
     int8_t pin_a = -1;
     int8_t pin_b = -1 ;
     int8_t pin_pwm = -1;
-
-};
-
-class VNH5019Pushit : VNH5019 {
-
-  public:
-
-    void pushit();
-    void stopit_maybe();
-    void stopit();
-
-  private:
-
-    volatile uint8_t target_speed;
-    volatile uint16_t last_step;
-    uint16_t interval = 10;
 
 };
 

@@ -55,6 +55,7 @@ void VNH5019::init() {
  */
 void VNH5019::go() {
   if (this->motor_state != VNH5019_GO) {
+    this->stopit_maybe();
     this->motor_state = VNH5019_GO;
     digitalWrite(this->pin_a, HIGH);
     digitalWrite(this->pin_b, LOW);
@@ -68,6 +69,7 @@ void VNH5019::go() {
  */
 void VNH5019::brake() {
   if (this->motor_state != VNH5019_BRAKE) {
+    this->stopit_maybe();
     this->motor_state = VNH5019_BRAKE;
     digitalWrite(this->pin_a, LOW);
     digitalWrite(this->pin_b, LOW);
@@ -79,7 +81,7 @@ void VNH5019::brake() {
  * pushit() - Gotta go fast. Pushes PWM to maximum at first, then backs off by
  * half after an interval has passed (default 1ms).
  */
-void VNH5019Pushit::pushit() {
+void VNH5019::pushit() {
 
   // First time in the accerlation mode, stepup required
   if (this->motor_state != VNH5019_ACCEL) {
@@ -122,24 +124,15 @@ void VNH5019Pushit::pushit() {
 
 }
 
-
 /**
  * stopit_maybe() - Resets any special state from the acceleration when
  * entering another mode, first checking if we're in that state.
  */
-void VNH5019Pushit::stopit_maybe() {
+void VNH5019::stopit_maybe() {
   if (this->motor_state == VNH5019_ACCEL) {
-    this->stopit();
+    this->curr_speed = this->target_speed;
+    this->last_step = 0;
   }
-}
-
-/**
- * stopit() - Resets any special state from the acceleration when entering
- * another mode
- */
-void VNH5019Pushit::stopit() {
-  this->curr_speed = this->target_speed;
-  this->last_step = 0;
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -176,7 +169,3 @@ bool VNH5019::isFreewheeling() {
 bool VNH5019::isBraking() {
   return (this->motor_state == VNH5019_BRAKE);
 }
-
-////////////////////////////////////////////////////////////////////////
-// GETTERS & SETTERS
-////////////////////////////////////////////////////////////////////////

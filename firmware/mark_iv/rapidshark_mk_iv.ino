@@ -224,18 +224,18 @@ void setAccelMotorState() {
 
   // If the acceleration trigger is being pushed, just go
   if (IS_ACC_TRIG_CLOSED) {
-    motor_accel.go();
+    motor_accel.pushit();
 
   // If the fire trigger is being pushed, just go IFF we're supposed to be firing
   } else if (IS_FIRE_TRIG_CLOSED) {
 
     // Keep plugging away for full auto mode
     if (fireMode.getMode() == MODE_FULL_AUTO) {
-      motor_accel.go();
+      motor_accel.pushit();
 
     // For burst/semi, only activate if we have shots remaining
     } else if (burstCounter > 0) {
-      motor_accel.go();
+      motor_accel.pushit();
 
     // Otherwise deactivate
     } else {
