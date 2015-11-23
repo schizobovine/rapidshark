@@ -8,6 +8,7 @@
  *
  */
 
+#include <Arduino.h>
 #include "vnh5019.h"
 
 ////////////////////////////////////////////////////////////////////////
@@ -39,7 +40,10 @@ VNH5019::VNH5019(int8_t a, int8_t b, int8_t pwm, uint8_t speed) {
 // gets called.
 
 void VNH5019::init() {
-  this->freewheel();
+  pinMode(this->pin_a, OUTPUT);
+  pinMode(this->pin_b, OUTPUT);
+  pinMode(this->pin_pwm, OUTPUT);
+  this->brake();
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -50,33 +54,11 @@ void VNH5019::init() {
  * go() - Makes wheels go spiny
  */
 void VNH5019::go() {
-
   if (this->motor_state != VNH5019_GO) {
     this->motor_state = VNH5019_GO;
-
-    pinMode(this->pin_a, OUTPUT);
-    pinMode(this->pin_b, OUTPUT);
     digitalWrite(this->pin_a, HIGH);
     digitalWrite(this->pin_b, LOW);
-    pinMode(this->pin_pwm, OUTPUT);
     analogWrite(this->pin_pwm, this->curr_speed);
-
-  }
-
-}
-
-/**
- * freewheel() - Sorta like stop, but by coasting instead of reverse polarity
- * braking.
- */
-void VNH5019::freewheel() {
-  if (this->motor_state != VNH5019_FREEWHEEL) {
-    this->motor_state = VNH5019_FREEWHEEL;
-    pinMode(this->pin_a, INPUT);
-    pinMode(this->pin_b, INPUT);
-    digitalWrite(this->pin_a, LOW);
-    digitalWrite(this->pin_b, LOW);
-    analogWrite(this->pin_pwm, 0);
   }
 }
 
@@ -87,12 +69,77 @@ void VNH5019::freewheel() {
 void VNH5019::brake() {
   if (this->motor_state != VNH5019_BRAKE) {
     this->motor_state = VNH5019_BRAKE;
-    pinMode(this->pin_a, OUTPUT);
-    pinMode(this->pin_b, OUTPUT);
     digitalWrite(this->pin_a, LOW);
     digitalWrite(this->pin_b, LOW);
     analogWrite(this->pin_pwm, this->brake_speed);
   }
+}
+
+/**
+ * pushit() - Gotta go fast. Pushes PWM to maximum at first, then backs off by
+ * half after an interval has passed (default 1ms).
+ */
+void VNH5019Pushit::pushit() {
+
+  // First time in the accerlation mode, stepup required
+  if (this->motor_state != VNH5019_ACCEL) {
+
+    this->motor_state = VNH5019_ACCEL;
+    this->target_speed = this->curr_speed;
+    this->curr_speed = 255;
+    this->last_step = millis();
+
+    digitalWrite(this->pin_a, HIGH);
+    digitalWrite(this->pin_b, LOW);
+    analogWrite(this->pin_pwm, this->curr_speed);
+
+  // Re-called to set state, so check our last step and reduce PWM if needed.
+  } else {
+    uint16_t now = millis();
+
+    // We've had at least one beat since last check, so drop PWM
+    if ((this->last_step - now) >= this->interval) {
+      uint8_t diff;
+
+      diff = this->curr_speed - this->target_speed;
+      diff = max(diff/2, 1);
+      this->curr_speed = this->curr_speed - diff;
+
+      // If we've reached the target speed, switch over to regular go mode
+      if (this->curr_speed <= this->target_speed) {
+        this->curr_speed = this->target_speed;
+        this->go();
+
+      // Otherwise, reduce speed and remember the time
+      } else {
+        this->last_step = now;
+        analogWrite(this->pin_pwm, this->curr_speed);
+      }
+
+    }
+
+  }
+
+}
+
+
+/**
+ * stopit_maybe() - Resets any special state from the acceleration when
+ * entering another mode, first checking if we're in that state.
+ */
+void VNH5019Pushit::stopit_maybe() {
+  if (this->motor_state == VNH5019_ACCEL) {
+    this->stopit();
+  }
+}
+
+/**
+ * stopit() - Resets any special state from the acceleration when entering
+ * another mode
+ */
+void VNH5019Pushit::stopit() {
+  this->curr_speed = this->target_speed;
+  this->last_step = 0;
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -129,3 +176,7 @@ bool VNH5019::isFreewheeling() {
 bool VNH5019::isBraking() {
   return (this->motor_state == VNH5019_BRAKE);
 }
+
+////////////////////////////////////////////////////////////////////////
+// GETTERS & SETTERS
+////////////////////////////////////////////////////////////////////////

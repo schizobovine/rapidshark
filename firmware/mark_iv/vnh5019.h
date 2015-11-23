@@ -26,6 +26,7 @@ typedef enum {
   VNH5019_FREEWHEEL,
   VNH5019_GO,
   VNH5019_BRAKE,
+  VNH5019_ACCEL,
 } VNH5019_state_t;
 
 //
@@ -58,7 +59,7 @@ class VNH5019 {
     bool isFreewheeling();
     bool isBraking();
 
-  private:
+  protected:
 
     // High-level "state" of the motor
     volatile VNH5019_state_t motor_state;
@@ -70,12 +71,28 @@ class VNH5019 {
     const uint8_t brake_speed = 255;
     
     // PWM duty cycle
-    uint8_t curr_speed;
+    volatile uint8_t curr_speed;
 
     // Pins in use; using -1 as a guard for unset pin values
     int8_t pin_a = -1;
     int8_t pin_b = -1 ;
     int8_t pin_pwm = -1;
+
+};
+
+class VNH5019Pushit : VNH5019 {
+
+  public:
+
+    void pushit();
+    void stopit_maybe();
+    void stopit();
+
+  private:
+
+    volatile uint8_t target_speed;
+    volatile uint16_t last_step;
+    uint16_t interval = 10;
 
 };
 
