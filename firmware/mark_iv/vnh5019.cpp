@@ -101,6 +101,8 @@ void VNH5019::pushit() {
 
     // We've had at least one beat since last check, so drop PWM
     if ((this->last_step - now) >= this->interval) {
+      this->go();
+      /*
       uint8_t diff;
 
       diff = this->curr_speed - this->target_speed;
@@ -117,6 +119,7 @@ void VNH5019::pushit() {
         this->last_step = now;
         analogWrite(this->pin_pwm, this->curr_speed);
       }
+      */
 
     }
 
