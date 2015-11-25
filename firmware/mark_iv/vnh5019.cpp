@@ -54,11 +54,18 @@ void VNH5019::init() {
  * go() - Makes wheels go spiny
  */
 void VNH5019::go() {
+  this->go(this->curr_speed);
+}
+
+/**
+ * go() - Makes wheels go spiny with a set speed (but don't save it)
+ */
+void VNH5019::go(uint8_t speed) {
   if (this->motor_state != VNH5019_GO) {
     this->motor_state = VNH5019_GO;
     digitalWrite(this->pin_a, HIGH);
     digitalWrite(this->pin_b, LOW);
-    analogWrite(this->pin_pwm, this->curr_speed);
+    analogWrite(this->pin_pwm, speed);
   }
 }
 
@@ -72,68 +79,6 @@ void VNH5019::brake() {
     digitalWrite(this->pin_a, LOW);
     digitalWrite(this->pin_b, LOW);
     analogWrite(this->pin_pwm, BRAKE_SPEED);
-  }
-}
-
-/**
- * pushit() - Gotta go fast. Pushes PWM to maximum at first, then backs off by
- * half after an interval has passed (default 1ms).
- */
-void VNH5019::pushit() {
-
-  // First time in the accerlation mode, stepup required
-  if (this->motor_state != VNH5019_ACCEL) {
-
-    this->motor_state = VNH5019_ACCEL;
-    this->target_speed = this->curr_speed;
-    this->curr_speed = 255;
-    this->last_step = millis();
-
-    digitalWrite(this->pin_a, HIGH);
-    digitalWrite(this->pin_b, LOW);
-    analogWrite(this->pin_pwm, this->curr_speed);
-
-  // Re-called to set state, so check our last step and reduce PWM if needed.
-  } else {
-    uint16_t now = millis();
-
-    // We've had at least one beat since last check, so drop PWM
-    if ((this->last_step - now) >= this->interval) {
-      // TODO need to merge cycles and have some kind of boost indicator? fuck me
-      this->go();
-      /*
-      uint8_t diff;
-
-      diff = this->curr_speed - this->target_speed;
-      diff = max(diff/2, 1);
-      this->curr_speed = this->curr_speed - diff;
-
-      // If we've reached the target speed, switch over to regular go mode
-      if (this->curr_speed <= this->target_speed) {
-        this->curr_speed = this->target_speed;
-        this->go();
-
-      // Otherwise, reduce speed and remember the time
-      } else {
-        this->last_step = now;
-        analogWrite(this->pin_pwm, this->curr_speed);
-      }
-      */
-
-    }
-
-  }
-
-}
-
-/**
- * stopit_maybe() - Resets any special state from the acceleration when
- * entering another mode, first checking if we're in that state.
- */
-void VNH5019::stopit_maybe() {
-  if (this->motor_state == VNH5019_ACCEL) {
-    this->curr_speed = this->target_speed;
-    this->last_step = 0;
   }
 }
 
