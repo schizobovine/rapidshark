@@ -99,11 +99,8 @@ void irq_butt_z();
 void displayLabel(uint8_t x, uint8_t y, const char *text, bool invert);
 void displayTextNormal();
 void displayTextFlipped();
-void refreshDisplay();
-
-void irq_init();
-void bouncer_init();
-void motor_init();
+void displayRefresh();
+void displayInit();
 
 void setup();
 void loop();

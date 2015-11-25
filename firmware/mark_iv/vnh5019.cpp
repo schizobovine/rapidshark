@@ -55,7 +55,6 @@ void VNH5019::init() {
  */
 void VNH5019::go() {
   if (this->motor_state != VNH5019_GO) {
-    this->stopit_maybe();
     this->motor_state = VNH5019_GO;
     digitalWrite(this->pin_a, HIGH);
     digitalWrite(this->pin_b, LOW);
@@ -69,11 +68,10 @@ void VNH5019::go() {
  */
 void VNH5019::brake() {
   if (this->motor_state != VNH5019_BRAKE) {
-    this->stopit_maybe();
     this->motor_state = VNH5019_BRAKE;
     digitalWrite(this->pin_a, LOW);
     digitalWrite(this->pin_b, LOW);
-    analogWrite(this->pin_pwm, this->brake_speed);
+    analogWrite(this->pin_pwm, BRAKE_SPEED);
   }
 }
 
@@ -144,7 +142,6 @@ void VNH5019::stopit_maybe() {
 ////////////////////////////////////////////////////////////////////////
 
 uint8_t VNH5019::setSpeed(uint8_t new_speed) {
-  this->curr_speed = constrain(new_speed, this->min_speed, this->max_speed);
   return this->curr_speed;
 }
 

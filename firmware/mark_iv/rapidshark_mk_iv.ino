@@ -29,6 +29,7 @@
 #include "vnh5019.h"
 #include "firemode.h"
 #include "clip.h"
+#include "tach.h"
 #include "rapidshark_mk_iv.h"
 
 #define SERIAL_DEBUG 1
@@ -73,81 +74,6 @@ FireMode fireMode(MODE_FULL_AUTO);
 volatile uint8_t burstCounter = 0;
 
 ////////////////////////////////////////////////////////////////////////
-// "HALPING" FUNCTIONS
-////////////////////////////////////////////////////////////////////////
-
-/*
- * refreshDisplay
- *
- * Update status information on the display.
- *
- */
-void refreshDisplay() {
-
-  display.clearDisplay();
-
-  displayTextNormal();
-  display.setTextSize(4);
-  display.setCursor(40, 0);
-  display.print(ammo_clip.getCurrent(), DEC);
-
-  display.setTextSize(1);
-
-  displayLabel( 0, 40, "ACC" , (IS_ACC_TRIG_CLOSED));
-  displayLabel( 0, 48, "FIRE", (IS_FIRE_TRIG_CLOSED));
-  displayLabel( 0, 56, "PUSH", (IS_PUSHER_EXTENDED));
-  displayLabel(30, 40, "DART", (dartDetector.read()));
-  displayLabel(30, 48, "CLIP", (IS_CLIP_INSERTED));
-
-  display.setCursor(30, 56);
-  switch (fireMode.getMode()) {
-    case MODE_SEMI_AUTO:
-      display.print("SEMI");
-      break;
-    case MODE_BURST:
-      display.print("BURST");
-      break;
-    case MODE_FULL_AUTO:
-      display.print("AUTO");
-      break;
-    default:
-      display.print("???");
-      break;
-  }
-
-  displayLabel(60, 40, "MACC", (motor_accel.isGoing()));
-  displayLabel(60, 48, "MPSH", (motor_push.isGoing()));
-
-  display.setCursor(90, 40);
-  display.print(motor_accel.getSpeed(), DEC);
-
-  display.setCursor(90, 48);
-  display.print(motor_push.getSpeed(), DEC);
-
-  display.display();
-
-}
-
-void displayLabel(uint8_t x, uint8_t y, const char *text, bool invert) {
-  display.setCursor(x, y);
-  if (invert) {
-    displayTextFlipped();
-  } else {
-    displayTextNormal();
-  }
-  display.print(text);
-  displayTextNormal();
-}
-
-void displayTextNormal() {
-  display.setTextColor(WHITE);
-}
-
-void displayTextFlipped() {
-  display.setTextColor(BLACK, WHITE);
-}
-
-////////////////////////////////////////////////////////////////////////
 // MOTOR STATE MACHINE
 ////////////////////////////////////////////////////////////////////////
 
@@ -162,28 +88,16 @@ void displayTextFlipped() {
  *
  */
 void setMotorState() {
- setPusherMotorState();
- setAccelMotorState();
-}
-
-/*
- * setPusherMotorState() 
- *
- * Called to figure out if pusher should brake or go, based on current system
- * state (is pusher extended, fire/accel triggers, and finally fire control
- * mode all factor in).
- *
- */
-void setPusherMotorState() {
   
+  /*********************************************************************
+   *                               PUSHER                              *
+   *********************************************************************/
+
   // If pusher switch is open, this means it's extended outward and needs to be
   // retracted no matter what;
-
   if (IS_PUSHER_EXTENDED) {
 
     motor_push.go();
-
-  // Pusher switch is assumed to be closed for the other states.
 
   // If the fire trigger is open, user has let go of it, and so yank brake to
   // stop pusher and thus stop firing.
@@ -195,47 +109,34 @@ void setPusherMotorState() {
   // potentially burst counter.
   } else {
 
-    // Keep plugging away for full auto mode
-    if (fireMode.getMode() == MODE_FULL_AUTO) {
+    // Keep plugging away for full auto mode; for burst/semi, only activate if
+    // we have shots remaining
+    if (fireMode.getMode() == MODE_FULL_AUTO || burstCounter > 0) {
+
       motor_push.go();
 
-    // For burst/semi, only activate if we have shots remaining
-    } else if (burstCounter > 0) {
-      motor_push.go();
-
-    // Otherwise deactivate
+    // Otherwise brake motor as we're done
     } else {
       motor_push.brake();
     }
 
   }
-
-}
-
-/*
- * setAccelMotorState() 
- *
- * Called to figure out if flywheel motors should freewheel or go, based on
- * current system state (fire/accel triggers and fire control mode all factor
- * in).
- *
- */
-void setAccelMotorState() {
+  
+  /*********************************************************************
+   *                            FLYWHEELS                              *
+   *********************************************************************/
 
   // If the acceleration trigger is being pushed, just go
   if (IS_ACC_TRIG_CLOSED) {
-    motor_accel.pushit();
+    motor_accel.go();
 
   // If the fire trigger is being pushed, just go IFF we're supposed to be firing
   } else if (IS_FIRE_TRIG_CLOSED) {
 
     // Keep plugging away for full auto mode
-    if (fireMode.getMode() == MODE_FULL_AUTO) {
-      motor_accel.pushit();
-
     // For burst/semi, only activate if we have shots remaining
-    } else if (burstCounter > 0) {
-      motor_accel.pushit();
+    if (fireMode.getMode() == MODE_FULL_AUTO || burstCounter > 0) {
+      motor_accel.go();
 
     // Otherwise deactivate
     } else {
@@ -361,9 +262,18 @@ void irq_butt_z() {
 ////////////////////////////////////////////////////////////////////////
 
 /*
- * init_irq - Setup interrupt handling routines
+ * setup() - Main entry point
  */
-void init_irq() {
+void setup() {
+
+  // Include serial debugging info if compiled in
+#if SERIAL_DEBUG
+  delay(500);
+  Serial.begin(SERIAL_BAUD_RATE);
+  Serial.println("HAI");
+#endif
+
+  // Setup interrupt handlers
   enableInterrupt(PIN_DART_DETECT,  irq_dart_detect, FALLING);
   enableInterrupt(PIN_SW_PUSH,      irq_sw_push,     CHANGE);
   enableInterrupt(PIN_SW_CLIP,      irq_sw_clip,     FALLING);
@@ -372,12 +282,8 @@ void init_irq() {
   enableInterrupt(PIN_BUTT_X,       irq_butt_x,      CHANGE);
   enableInterrupt(PIN_BUTT_Y,       irq_butt_y,      CHANGE);
   enableInterrupt(PIN_BUTT_Z,       irq_butt_z,      CHANGE);
-}
 
-/*
- * init_bouncers - Setup debouncing objects
- */
-void init_bouncers() {
+  // Setup debouncing objects
   dartDetector      .attach(PIN_DART_DETECT, INPUT_PULLUP, DEBOUNCE_DART_DETECT);
   switchPusher      .attach(PIN_SW_PUSH,     INPUT_PULLUP, DEBOUNCE_PUSH);
   switchClipDetect  .attach(PIN_SW_CLIP,     INPUT_PULLUP, DEBOUNCE_CLIP);
@@ -386,49 +292,13 @@ void init_bouncers() {
   buttonX           .attach(PIN_BUTT_X,      INPUT_PULLUP, DEBOUNCE_BUTT_X);
   buttonY           .attach(PIN_BUTT_Y,      INPUT_PULLUP, DEBOUNCE_BUTT_Y);
   buttonZ           .attach(PIN_BUTT_Z,      INPUT_PULLUP, DEBOUNCE_BUTT_Z);
-}
 
-/*
- * init_motors - Configure & set to known state
- */
-void init_motors() {
+  // Set motors to know good state (i.e., not running)
   motor_accel.init();
   motor_push.init();
-}
 
-/*
- * init_display - Boot up display and print out something to show it works
- */
-void init_display() {
-  Wire.begin();
-  display.begin(DISP_MODE, DISP_ADDR);
-  display.clearDisplay();
-  display.setTextColor(DISP_COLOR);
-  display.setTextSize(DISP_TEXT_LARGE);
-  display.println();
-  display.print("RapidShark");
-  display.print("  Mark IV");
-  display.dim(false);
-  display.setTextWrap(false);
-  display.display();
-}
-
-/*
- * setup() - Main entry point
- */
-void setup() {
-
-#if SERIAL_DEBUG
-  delay(500);
-  Serial.begin(SERIAL_BAUD_RATE);
-  Serial.println("HAI");
-#endif
-
-  init_motors();
-  init_bouncers();
-  init_irq();
-  init_display();
-
+  // Boot up display and show "splash" screen
+  displayInit();
   delay(500);
 
 }
@@ -443,7 +313,7 @@ void loop() {
   setMotorState();
 
   // Update display
-  refreshDisplay();
+  displayRefresh();
 
   // Put CPU to sleep until an event (likely one of our timer or pin change
   // interrupts) wakes it

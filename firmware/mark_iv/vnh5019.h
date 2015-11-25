@@ -67,11 +67,8 @@ class VNH5019 {
     // High-level "state" of the motor
     volatile VNH5019_state_t motor_state;
 
-    // Hard coding these because not exactly something to dick around with
-    // much. Be sure these outputs are within the range of the motor!
-    const uint8_t min_speed = 0;
-    const uint8_t max_speed = 255;
-    const uint8_t brake_speed = 255;
+    // Have to brake will full throttle to get maximal stopping power
+    const uint8_t BRAKE_SPEED = 255;
     
     // PWM duty cycle
     volatile uint8_t curr_speed;
