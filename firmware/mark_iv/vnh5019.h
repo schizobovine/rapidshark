@@ -11,9 +11,6 @@
 #ifndef __VNH5019_H
 #define __VNH5019_H
 
-#include <limits.h>
-#include <avr/io.h>
-#include <avr/pgmspace.h>
 #include <Arduino.h>
 
 //
@@ -38,8 +35,8 @@ class VNH5019 {
 
   public:
 
-    VNH5019();
-    VNH5019(int8_t a, int8_t b, int8_t pwm);
+    //VNH5019();
+    //VNH5019(int8_t a, int8_t b, int8_t pwm);
     VNH5019(int8_t a, int8_t b, int8_t pwm, uint8_t speed);
 
     void init();
@@ -60,7 +57,7 @@ class VNH5019 {
     bool isFreewheeling();
     bool isBraking();
 
-  protected:
+  private:
 
     // High-level "state" of the motor
     volatile VNH5019_state_t motor_state;
@@ -72,9 +69,9 @@ class VNH5019 {
     volatile uint8_t curr_speed;
 
     // Pins in use; using -1 as a guard for unset pin values
-    int8_t pin_a = -1;
-    int8_t pin_b = -1 ;
-    int8_t pin_pwm = -1;
+    int8_t pin_a;
+    int8_t pin_b;
+    int8_t pin_pwm;
 
 };
 

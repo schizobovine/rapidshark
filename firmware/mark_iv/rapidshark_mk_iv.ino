@@ -96,30 +96,22 @@ void setMotorState() {
   // If pusher switch is open, this means it's extended outward and needs to be
   // retracted no matter what;
   if (IS_PUSHER_EXTENDED) {
-
     motor_push.go();
 
   // If the fire trigger is open, user has let go of it, and so yank brake to
   // stop pusher and thus stop firing.
   } else if (IS_FIRE_TRIG_OPEN) {
-
     motor_push.brake();
 
   // Trigger held down, so activate depending on fire control mode and
-  // potentially burst counter.
-  } else {
-
-    // Keep plugging away for full auto mode; for burst/semi, only activate if
-    // we have shots remaining
-    if (fireMode.getMode() == MODE_FULL_AUTO || burstCounter > 0) {
-
+  // potentially burst counter: keep plugging away for full auto mode; for
+  // burst/semi, only activate if we have shots remaining
+  } else if (fireMode.keepFiringAssholes()) {
       motor_push.go();
 
-    // Otherwise brake motor as we're done
-    } else {
-      motor_push.brake();
-    }
-
+  // Otherwise brake motor
+  } else {
+    motor_push.brake();
   }
   
   /*********************************************************************
@@ -131,19 +123,10 @@ void setMotorState() {
     motor_accel.go();
 
   // If the fire trigger is being pushed, just go IFF we're supposed to be firing
-  } else if (IS_FIRE_TRIG_CLOSED) {
+  } else if (IS_FIRE_TRIG_CLOSED && fireMode.keepFiringAssholes()) {
+    motor_accel.go();
 
-    // Keep plugging away for full auto mode
-    // For burst/semi, only activate if we have shots remaining
-    if (fireMode.getMode() == MODE_FULL_AUTO || burstCounter > 0) {
-      motor_accel.go();
-
-    // Otherwise deactivate
-    } else {
-      motor_accel.brake();
-    }
-
-  // No triggers, no spinny
+  // Otherwise, brake motor
   } else {
     motor_accel.brake();
   }
@@ -273,6 +256,10 @@ void setup() {
   Serial.println("HAI");
 #endif
 
+  // Set motors to know good state (i.e., not running)
+  motor_accel.init();
+  motor_push.init();
+
   // Setup interrupt handlers
   enableInterrupt(PIN_DART_DETECT,  irq_dart_detect, FALLING);
   enableInterrupt(PIN_SW_PUSH,      irq_sw_push,     CHANGE);
@@ -292,10 +279,6 @@ void setup() {
   buttonX           .attach(PIN_BUTT_X,      INPUT_PULLUP, DEBOUNCE_BUTT_X);
   buttonY           .attach(PIN_BUTT_Y,      INPUT_PULLUP, DEBOUNCE_BUTT_Y);
   buttonZ           .attach(PIN_BUTT_Z,      INPUT_PULLUP, DEBOUNCE_BUTT_Z);
-
-  // Set motors to know good state (i.e., not running)
-  motor_accel.init();
-  motor_push.init();
 
   // Boot up display and show "splash" screen
   displayInit();

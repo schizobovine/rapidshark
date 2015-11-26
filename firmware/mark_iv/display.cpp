@@ -116,13 +116,13 @@ void displayRefresh() {
       break;
   }
 
-  displayLabel(60, 40, "MACC", (motor_accel.isGoing()));
-  displayLabel(60, 48, "MPSH", (motor_push.isGoing()));
+  displayLabel(72, 40, "FLY", (motor_accel.isGoing()));
+  displayLabel(66, 48, "PUSH", (motor_push.isGoing()));
 
-  display.setCursor(90, 40);
+  display.setCursor(96, 40);
   display.print(motor_accel.getSpeed(), DEC);
 
-  display.setCursor(90, 48);
+  display.setCursor(96, 48);
   display.print(motor_push.getSpeed(), DEC);
 
   display.display();

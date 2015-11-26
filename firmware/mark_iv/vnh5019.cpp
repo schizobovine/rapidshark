@@ -15,21 +15,25 @@
 // CONSTRUCTORS
 ////////////////////////////////////////////////////////////////////////
 
-VNH5019::VNH5019() {
-  this->curr_speed = 0;
-  this->motor_state = VNH5019_FREEWHEEL;
-}
+/*
+VNH5019::VNH5019() :
+  curr_speed = 0,
+{}
 
-VNH5019::VNH5019(int8_t a, int8_t b, int8_t pwm) {
-  VNH5019();
-  this->setPins(a, b, pwm);
-} 
+VNH5019::VNH5019(int8_t _pin_a, int8_t _pin_b, int8_t _pin_pwm) :
+  pin_a(_pin_a),
+  pin_b(_pin_b),
+  pin_pwm(_pin_pwm),
+{} 
+*/
 
-VNH5019::VNH5019(int8_t a, int8_t b, int8_t pwm, uint8_t speed) {
-  VNH5019();
-  this->setPins(a, b, pwm);
-  this->setSpeed(speed);
-} 
+VNH5019::VNH5019(int8_t _pin_a, int8_t _pin_b, int8_t _pin_pwm, uint8_t speed) :
+  motor_state(VNH5019_FREEWHEEL),
+  curr_speed(speed),
+  pin_a(_pin_a),
+  pin_b(_pin_b),
+  pin_pwm(_pin_pwm)
+{} 
 
 ////////////////////////////////////////////////////////////////////////
 // INITIALIZATION
@@ -94,10 +98,10 @@ uint8_t VNH5019::getSpeed() {
   return this->curr_speed;
 }
 
-void VNH5019::setPins(int8_t a, int8_t b, int8_t pwm) {
-  this->pin_a = a;
-  this->pin_b = b;
-  this->pin_pwm = pwm;
+void VNH5019::setPins(int8_t pin_a, int8_t pin_b, int8_t pin_pwm) {
+  this->pin_a = pin_a;
+  this->pin_b = pin_b;
+  this->pin_pwm = pin_pwm;
 }
 
 VNH5019_state_t VNH5019::getMotorState() {
