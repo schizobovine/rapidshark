@@ -20,7 +20,7 @@
 // Pin assignments
 //
 
-#define PIN_DART_DETECT 2
+#define PIN_TACHOMETER  2
 #define PIN_SW_PUSH     3
 #define PIN_SW_CLIP     4
 #define PIN_SW_FIRE     6
@@ -52,14 +52,13 @@
 
 #define MOTOR_ACCEL_SPEED 128
 #define MOTOR_PUSH_SPEED  96
-
-#define BURST_COUNT 3
+#define TACH_HISTORY_LEN  5
 
 //
 // Debounce intervals (in ms)
 //
 
-#define DEBOUNCE_DART_DETECT  (10)
+#define DEBOUNCE_TACHOMETER   (1)
 #define DEBOUNCE_PUSH         (1)
 #define DEBOUNCE_CLIP         (10)
 #define DEBOUNCE_FIRE         (10)
@@ -87,7 +86,7 @@ void setMotorState();
 void setPusherMotorState();
 void setAccelMotorState();
 
-void irq_dart_detect();
+void irq_tach_sens();
 void irq_sw_push();
 void irq_sw_clip();
 void irq_sw_fire();

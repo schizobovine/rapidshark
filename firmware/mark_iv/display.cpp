@@ -73,6 +73,9 @@ extern AmmoClip ammo_clip;
 // Current fire control mode
 extern FireMode fireMode;
 
+// Monitor flywheel rotational velocity
+extern Tachometer tach;
+
 ////////////////////////////////////////////////////////////////////////
 // DISPLAY FUNCTIONS
 ////////////////////////////////////////////////////////////////////////
@@ -97,7 +100,6 @@ void displayRefresh() {
   displayLabel( 0, 40, "ACC" , (IS_ACC_TRIG_CLOSED));
   displayLabel( 0, 48, "FIRE", (IS_FIRE_TRIG_CLOSED));
   displayLabel( 0, 56, "PUSH", (IS_PUSHER_EXTENDED));
-  //displayLabel(30, 40, "DART", (dartDetector.read()));
   displayLabel(30, 40, "CLIP", (IS_CLIP_INSERTED));
 
   display.setCursor(30, 48);
@@ -118,12 +120,16 @@ void displayRefresh() {
 
   displayLabel(72, 40, "FLY", (motor_accel.isGoing()));
   displayLabel(66, 48, "PUSH", (motor_push.isGoing()));
+  displayLabel(72, 56, "RPM", false);
 
   display.setCursor(96, 40);
   display.print(motor_accel.getSpeed(), DEC);
 
   display.setCursor(96, 48);
   display.print(motor_push.getSpeed(), DEC);
+
+  display.setCursor(96, 56);
+  display.print(tach.rpm(), DEC);
 
   display.display();
 

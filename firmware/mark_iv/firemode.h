@@ -41,6 +41,7 @@ class FireMode {
     uint8_t getBurstCount();
     uint8_t decBurstCount();
     uint8_t resetBurstCount();
+    uint8_t zeroBurstCount();
     bool keepFiringAssholes();
   private:
     volatile fire_mode_t _mode;

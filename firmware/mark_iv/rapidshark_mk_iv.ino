@@ -55,7 +55,7 @@ VNH5019 motor_accel = VNH5019(PIN_ACCEL_A, PIN_ACCEL_B, PIN_ACCEL_PWM, MOTOR_ACC
 VNH5019 motor_push  = VNH5019(PIN_PUSH_A,  PIN_PUSH_B,  PIN_PUSH_PWM,  MOTOR_PUSH_SPEED);
 
 // Button/switch debouncers
-Bounce dartDetector;
+Bounce tachSensor;
 Bounce switchPusher;
 Bounce switchClipDetect;
 Bounce switchFireTrigger;
@@ -70,8 +70,8 @@ AmmoClip ammo_clip(CLIP_DEFAULT);
 // Current fire control mode
 FireMode fireMode(MODE_FULL_AUTO);
 
-// Shots left to fire in burst mode
-volatile uint8_t burstCounter = 0;
+// Monitor flywheel rotational velocity
+Tachometer tach(TACH_HISTORY_LEN);
 
 ////////////////////////////////////////////////////////////////////////
 // MOTOR STATE MACHINE
@@ -138,11 +138,12 @@ void setMotorState() {
 ////////////////////////////////////////////////////////////////////////
 
 /*
- * irq_dart_detect - Called when the IR sensor gets occluded by a dart.
+ * irq_tach_sens - Called when IR sensor "sees" the IR LED behind the flywheel,
+ * i.e., one rotation has completed.
  */
-void irq_dart_detect() {
-  if (dartDetector.update() && dartDetector.fell()) {
-    ammo_clip.decrement();
+void irq_tach_sens() {
+  if (tachSensor.update() && tachSensor.fell()) {
+    tach.mark();
   }
 }
 
@@ -158,9 +159,8 @@ void irq_sw_push() {
     // meaning we've just completed a single fire cycle. In limited fire modes,
     // this means we should mark off one shot taken.
     if (switchPusher.fell()) {
-      if ((fireMode.getMode() == MODE_SEMI_AUTO || fireMode.getMode() == MODE_BURST) && burstCounter > 0) {
-        burstCounter--;
-      }
+      fireMode.decBurstCount();
+      ammo_clip.decrement();
     }
 
     // Change motor states if needed
@@ -188,17 +188,13 @@ void irq_sw_fire() {
 
     // On falling signal (user is just starting to close the switch, so pulling
     // the trigger to fire), set the burst counter if we're in that mode.
-    if (switchFireTrigger.fell() && burstCounter <= 0) {
-      if (fireMode.getMode() == MODE_SEMI_AUTO) {
-        burstCounter = 1;
-      } else if (fireMode.getMode() == MODE_BURST) {
-        burstCounter = 3;
-      }
+    if (switchFireTrigger.fell()) {
+      fireMode.resetBurstCount();
 
     // On the rising signal (user is letting go of the trigger and it's just
     // opening again), reset burst counter to zero.
-    } else if (switchFireTrigger.rose() && burstCounter > 0) {
-      burstCounter = 0;
+    } else if (switchFireTrigger.rose()) {
+      fireMode.zeroBurstCount();
     }
 
     // Change motor states if needed
@@ -261,24 +257,24 @@ void setup() {
   motor_push.init();
 
   // Setup interrupt handlers
-  enableInterrupt(PIN_DART_DETECT,  irq_dart_detect, FALLING);
-  enableInterrupt(PIN_SW_PUSH,      irq_sw_push,     CHANGE);
-  enableInterrupt(PIN_SW_CLIP,      irq_sw_clip,     FALLING);
-  enableInterrupt(PIN_SW_FIRE,      irq_sw_fire,     CHANGE);
-  enableInterrupt(PIN_SW_ACCEL,     irq_sw_accel,    CHANGE);
-  enableInterrupt(PIN_BUTT_X,       irq_butt_x,      CHANGE);
-  enableInterrupt(PIN_BUTT_Y,       irq_butt_y,      CHANGE);
-  enableInterrupt(PIN_BUTT_Z,       irq_butt_z,      CHANGE);
+  enableInterrupt(PIN_TACHOMETER, irq_tach_sens, FALLING);
+  enableInterrupt(PIN_SW_PUSH,    irq_sw_push,   CHANGE);
+  enableInterrupt(PIN_SW_CLIP,    irq_sw_clip,   FALLING);
+  enableInterrupt(PIN_SW_FIRE,    irq_sw_fire,   CHANGE);
+  enableInterrupt(PIN_SW_ACCEL,   irq_sw_accel,  CHANGE);
+  enableInterrupt(PIN_BUTT_X,     irq_butt_x,    CHANGE);
+  enableInterrupt(PIN_BUTT_Y,     irq_butt_y,    CHANGE);
+  enableInterrupt(PIN_BUTT_Z,     irq_butt_z,    CHANGE);
 
   // Setup debouncing objects
-  dartDetector      .attach(PIN_DART_DETECT, INPUT_PULLUP, DEBOUNCE_DART_DETECT);
-  switchPusher      .attach(PIN_SW_PUSH,     INPUT_PULLUP, DEBOUNCE_PUSH);
-  switchClipDetect  .attach(PIN_SW_CLIP,     INPUT_PULLUP, DEBOUNCE_CLIP);
-  switchFireTrigger .attach(PIN_SW_FIRE,     INPUT_PULLUP, DEBOUNCE_FIRE);
-  switchAccelTrigger.attach(PIN_SW_ACCEL,    INPUT_PULLUP, DEBOUNCE_ACCEL);
-  buttonX           .attach(PIN_BUTT_X,      INPUT_PULLUP, DEBOUNCE_BUTT_X);
-  buttonY           .attach(PIN_BUTT_Y,      INPUT_PULLUP, DEBOUNCE_BUTT_Y);
-  buttonZ           .attach(PIN_BUTT_Z,      INPUT_PULLUP, DEBOUNCE_BUTT_Z);
+  tachSensor        .attach(PIN_TACHOMETER, INPUT_PULLUP, DEBOUNCE_TACHOMETER);
+  switchPusher      .attach(PIN_SW_PUSH,    INPUT_PULLUP, DEBOUNCE_PUSH);
+  switchClipDetect  .attach(PIN_SW_CLIP,    INPUT_PULLUP, DEBOUNCE_CLIP);
+  switchFireTrigger .attach(PIN_SW_FIRE,    INPUT_PULLUP, DEBOUNCE_FIRE);
+  switchAccelTrigger.attach(PIN_SW_ACCEL,   INPUT_PULLUP, DEBOUNCE_ACCEL);
+  buttonX           .attach(PIN_BUTT_X,     INPUT_PULLUP, DEBOUNCE_BUTT_X);
+  buttonY           .attach(PIN_BUTT_Y,     INPUT_PULLUP, DEBOUNCE_BUTT_Y);
+  buttonZ           .attach(PIN_BUTT_Z,     INPUT_PULLUP, DEBOUNCE_BUTT_Z);
 
   // Boot up display and show "splash" screen
   displayInit();

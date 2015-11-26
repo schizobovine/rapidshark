@@ -109,6 +109,14 @@ uint8_t FireMode::resetBurstCount() {
 }
 
 //
+// zeroBurstCount - Set burst count to zero.
+//
+uint8_t FireMode::zeroBurstCount() {
+  this->burst_count = 0;
+  return this->burst_count;
+}
+
+//
 // keepFiringAssholes() - Looks at fire control mode and determines if the gun
 // should continue firing.
 //

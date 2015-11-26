@@ -14,7 +14,16 @@
 /*
  * Tachometer() - Measures your tacos...I mean speed.
  */
-Tachometer::Tachometer() {
+Tachometer::Tachometer(uint8_t len) {
+  this->len = len;
+  this->diffs = new uint32_t[len];
+}
+
+/*
+ * ~Tachometer() - Destructors? Who even calls those?
+ */
+Tachometer::~Tachometer() {
+  delete this->diffs;
 }
 
 /*
@@ -26,7 +35,7 @@ void Tachometer::mark() {
   // Increment first so reader won't attempt to read an incomplete value (since
   // only reader can be interrupted, not us).
   uint8_t old_pos = this->pos;
-  this->pos = (this->pos + 1) % HISTORY_SIZE;
+  this->pos = (this->pos + 1) % this->len;
 
   // Save diff between now and last rotation in measurement buffer, then save
   // this timestamp.
@@ -41,13 +50,13 @@ void Tachometer::mark() {
 float Tachometer::rpm() {
   uint32_t sum_of_diff = 0;
 
-  for (uint8_t i=0; i<HISTORY_SIZE; i++) {
+  for (uint8_t i=0; i<this->len; i++) {
     if (i != pos) {
       sum_of_diff += this->diffs[i]; 
     }
   }
 
-  float tau = sum_of_diff / (HISTORY_SIZE - 1);
+  float tau = sum_of_diff / (this->len - 1);
   float hz = 1000.0 * 1000.0 / tau;
 
   return hz * 60.0;
