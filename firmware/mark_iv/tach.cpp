@@ -14,6 +14,12 @@
 /*
  * Tachometer() - Measures your tacos...I mean speed.
  */
+Tachometer::Tachometer() {
+}
+
+/*
+ * Tachometer(uint8_t) - I hate C++
+ */
 Tachometer::Tachometer(uint8_t ignored) {
 }
 
@@ -24,12 +30,16 @@ Tachometer::~Tachometer() {
 }
 
 /*
- * init() - Initialize sample array and other housekeeping shit.
+ * reset() - (Re-)Initialize sample array and other housekeeping shit.
  */
-void Tachometer::init() {
-  for (uint8_t i=0; i<this->num_samples; i++) {
+void Tachometer::reset() {
+  for (uint8_t i=0; i<this->total_samples; i++) {
     this->diffs[i] = 0;
   }
+  this->running_total = 0;
+  this->last = 0;
+  this->num_samples = 0;
+  this->pos = 0;
 }
 
 /*
@@ -43,107 +53,59 @@ void Tachometer::mark() {
   if (now == this->last)
     return;
 
-  // We're entering new data so tag it for the bottom half handler
-  //this->new_data = true;
+  // Calculate microseconds since last mark
+  uint32_t big_diff = now - this->last;
+  uint16_t new_diff = constrain(big_diff, 0, UINT16_MAX);
 
-  // Increment first so reader won't attempt to read an incomplete value (since
-  // only reader can be interrupted, not us).
-  uint8_t old_pos = this->pos;
-  this->pos = (this->pos + 1) % this->num_samples;
+  // If we've filled the buffer, subtract out old sample from running total. If
+  // not filled, bump current sample count
+  if (this->num_samples == this->total_samples) {
+    this->running_total -= this->diffs[this->pos];
+  } else {
+    this->num_samples++;
+  }
 
-  // Save diff between now and last rotation in measurement buffer, then save
-  // this timestamp.
-  this->diffs[old_pos] = now - this->last;
+  // Save diff between now and last rotation in measurement buffer, running
+  // total, & micros timestamp.
+  this->diffs[this->pos] = new_diff;
+  this->running_total += new_diff;
   this->last = now;
 
+  // Increment position
+  this->pos = (this->pos + 1) % this->total_samples;
+
 }
 
 /*
- * getDiffAt() - Retrieve diff value from buffer in a relatively irq friendly
- * way.
- *
- * If you attempt to access the current writing position, will return 0.
- *
+ * tau() - Calculates current average period of rotation (tau is the normal
+ * variable used in physics-y stuff to talk about it, hence the name).
  */
-usec Tachometer::getDiffAt(uint8_t index) {
-  usec copy = 0;
-
-  // Bounds checking
-  if (index < 0 || index >= this->num_samples)
+uint16_t Tachometer::tau() {
+  if (this->num_samples == this->total_samples) {     //try to take compile-time
+    return this->running_total / this->total_samples; //advantage of constant
+  } else if (this->num_samples > 0) {
+    return this->running_total / this->num_samples;
+  } else {
     return 0;
-
-  // Critical section
-  noInterrupts();
-  if (this->pos != index) {
-    copy = this->diffs[index];
   }
-  interrupts();
-
-  // Return data copy
-  return copy;
-
 }
 
 /*
- * rpm() - Calculates current rolling average RPMs.
+ * rpm() - Calculates current average RPMs over sample set.
  */
 float Tachometer::rpm() {
-  usec sum_of_diff = 0;
-  uint8_t samples = 0;
 
-  for (uint8_t i=0; i<this->num_samples; i++) {
-
-    // Copy sample data in an interrupt safe way
-    usec sample = this->getDiffAt(i);
-
-    // If it's a valid sample, add to the running total
-    if (sample != 0) {
-      sum_of_diff += sample;
-      samples++;
-    }
-
+  // Avoid some divide by zero silliness
+  if (this->num_samples <= 0) {
+    return 0.0;
   }
 
-  // Check for divide by zero b/c that's not a great plan
-  if (samples < 1)
-    return 0.0;
-
-  // Calculate average period over sample set
-  float tau = ((float)sum_of_diff) / ((float)samples);
-
-  // Convert to frequency
-  float hz = 1000.0 * 1000.0 / tau;
+  // Calculate average period over sample set then convert to frequency
+  float hz = 1000.0 * 1000.0 / this->tau();
 
   // Return RPMs
   return hz * 60.0;
 
 }
-
-////////////////////////////////////////////////////////////////////////
-// DEBUGGING
-////////////////////////////////////////////////////////////////////////
-
-#if 0
-bool Tachometer::test_and_set() {
-
-  // This bit of funkiness is to ensure the value we're pulling from our flag
-  // variable can be overwritten by the irq handler while we're off doing other
-  // stuff. Execution of the (relatively long) serial data dump depends only on
-  // the local copy protected by the interrupt exclusion block (just long
-  // enough to test, copy old value, reset shared var).
-
-  bool new_data_copy = false;
-
-  noInterrupts();
-  if (this->new_data) {
-    this->new_data = false;
-    new_data_copy = true;
-  }
-  interrupts();
-
-  return new_data_copy;
-
-}
-#endif
 
 // vi: syntax=arduino

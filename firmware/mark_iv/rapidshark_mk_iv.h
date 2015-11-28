@@ -47,12 +47,24 @@
 #define DISP_MODE       SSD1306_SWITCHCAPVCC
 
 //
-// Settings
+// Motor speed settings
 //
 
-#define MOTOR_ACCEL_SPEED 128
-#define MOTOR_PUSH_SPEED  96
-#define TACH_HISTORY_LEN  5
+#define MOTOR_ACCEL_SPEED     128
+#define MOTOR_ACCEL_SPEED_MAX 255
+#define MOTOR_PUSH_SPEED      96
+
+// Number of microseconds per rotational period for 20krpm, the measured
+// average speed at half-throttle, so we can full-throttle accelerate to that
+// speed.
+//
+//                1
+// tau = -------------------- * 1000 (ms/sec) * 1000 (us/ms)
+//       20krpm / 60(sec/min)
+//     = 60 * 1000 * 1000 / 20000 us
+//     = 3000 us
+
+#define MOTOR_ACCEL_SET_PERIOD (3000)
 
 //
 // Debounce intervals (in ms)
@@ -82,9 +94,8 @@
 // PROTOTYPES
 ////////////////////////////////////////////////////////////////////////
 
+bool finishedAccel();
 void setMotorState();
-void setPusherMotorState();
-void setAccelMotorState();
 
 void irq_tach_sens();
 void irq_sw_push();
@@ -95,6 +106,7 @@ void irq_butt_x();
 void irq_butt_y();
 void irq_butt_z();
 
+void displayDecimal(uint8_t x, uint8_t y, int num);
 void displayLabel(uint8_t x, uint8_t y, const char *text, bool invert);
 void displayTextNormal();
 void displayTextFlipped();

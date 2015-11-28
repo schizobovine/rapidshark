@@ -81,56 +81,6 @@ extern Tachometer tach;
 ////////////////////////////////////////////////////////////////////////
 
 /*
- * displayDebugData
- *
- * Display debugging info instead of normal display.
- *
- */
-void displayDebugData() {
-  display.clearDisplay();
-
-  displayTextNormal();
-  display.setTextSize(1);
-
-  for (uint8_t i=0; i<tach.num_samples; i++) {
-    usec sample = tach.getDiffAt(i);
-    display.setCursor(0, 8*i);
-    display.print(i, DEC);
-    display.setCursor(12, 8*i);
-    display.print(sample, DEC);
-  }
-
-  uint32_t now = millis();
-  uint8_t h, m, s;
-
-  s = now / 1000;
-  m = s / 60;
-  h = m / 60;
-  s = s % 60;
-  m = m % 60;
-
-  display.setCursor(0, 8*(tach.num_samples+1));
-  display.print(tach.rpm(), DEC);
-
-  display.setCursor(0, 8*(tach.num_samples+2));
-
-  if (h < 10) display.print(0, DEC);
-  display.print(h);
-
-  //display.setCursor(12, 8*(len+1));
-  display.print(":");
-  if (m < 10) display.print(0, DEC);
-  display.print(m);
-
-  //display.setCursor(30, 8*(len+1));
-  display.print(":");
-  if (s < 10) display.print(0, DEC);
-  display.print(s);
-
-  display.display();
-}
-
-/*
  * displayRefresh
  *
  * Update status information on the display.
@@ -150,8 +100,8 @@ void displayRefresh() {
   displayLabel( 0, 40, "ACC" , (IS_ACC_TRIG_CLOSED));
   displayLabel( 0, 48, "FIRE", (IS_FIRE_TRIG_CLOSED));
   displayLabel( 0, 56, "PUSH", (IS_PUSHER_EXTENDED));
-  displayLabel(30, 40, "CLIP", (IS_CLIP_INSERTED));
 
+  displayLabel(30, 40, "CLIP", (IS_CLIP_INSERTED));
   display.setCursor(30, 48);
   switch (fireMode.getMode()) {
     case MODE_SEMI_AUTO:
@@ -167,22 +117,22 @@ void displayRefresh() {
       display.print("???");
       break;
   }
+  displayLabel(30, 56, "RPM", false);
 
-  displayLabel(72, 40, "FLY", (motor_accel.isGoing()));
+  displayLabel(66, 40, " FLY", (motor_accel.isGoing()));
   displayLabel(66, 48, "PUSH", (motor_push.isGoing()));
-  displayLabel(72, 56, "RPM", false);
+  displayDecimal(60, 56, tach.rpm());
 
-  display.setCursor(96, 40);
-  display.print(motor_accel.getSpeed(), DEC);
-
-  display.setCursor(96, 48);
-  display.print(motor_push.getSpeed(), DEC);
-
-  display.setCursor(96, 56);
-  display.print(tach.rpm(), DEC);
+  displayDecimal(96, 40, motor_accel.getSpeed());
+  displayDecimal(96, 48, motor_push.getSpeed());
 
   display.display();
 
+}
+
+void displayDecimal(uint8_t x, uint8_t y, int num) {
+  display.setCursor(x, y);
+  display.print(num, DEC);
 }
 
 void displayLabel(uint8_t x, uint8_t y, const char *text, bool invert) {

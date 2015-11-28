@@ -50,6 +50,9 @@
 // Display controller
 Adafruit_SSD1306 display(PIN_DISP_RST);
 
+// Monitor flywheel rotational velocity
+Tachometer tach;
+
 // Motor controllers
 VNH5019 motor_accel = VNH5019(PIN_ACCEL_A, PIN_ACCEL_B, PIN_ACCEL_PWM, MOTOR_ACCEL_SPEED);
 VNH5019 motor_push  = VNH5019(PIN_PUSH_A,  PIN_PUSH_B,  PIN_PUSH_PWM,  MOTOR_PUSH_SPEED);
@@ -70,12 +73,27 @@ AmmoClip ammo_clip(CLIP_DEFAULT);
 // Current fire control mode
 FireMode fireMode(MODE_FULL_AUTO);
 
-// Monitor flywheel rotational velocity
-Tachometer tach(TACH_HISTORY_LEN);
-
 ////////////////////////////////////////////////////////////////////////
 // MOTOR STATE MACHINE
 ////////////////////////////////////////////////////////////////////////
+
+/*
+ * finishedAccel()
+ *
+ * Returns true if the flywheels are rotating at their set point speed or
+ * higher. Used to throttle flywheel motors to maximize acceleration while not
+ * destroying them.
+ *
+ */
+bool finishedAccel() {
+  if (motor_accel.isGoing()) {
+    uint16_t tau = tach.tau();
+    if (tau != 0 && tau >= MOTOR_ACCEL_SET_PERIOD) {
+      return true;
+    }
+  }
+  return false;
+}
 
 /*
  * setMotorState() 
@@ -118,17 +136,23 @@ void setMotorState() {
    *                            FLYWHEELS                              *
    *********************************************************************/
 
-  // If the acceleration trigger is being pushed, just go
-  if (IS_ACC_TRIG_CLOSED) {
-    motor_accel.go();
+  // If the acceleration trigger is being pushed OR if the fire trigger is
+  // being pushed & we're supposed to be firing, run motors
+  if (IS_ACC_TRIG_CLOSED || (IS_FIRE_TRIG_CLOSED && fireMode.keepFiringAssholes())) {
 
-  // If the fire trigger is being pushed, just go IFF we're supposed to be firing
-  } else if (IS_FIRE_TRIG_CLOSED && fireMode.keepFiringAssholes()) {
-    motor_accel.go();
+    // If we're not at speed, floor it
+    if (finishedAccel()) {
+      motor_accel.go(MOTOR_ACCEL_SPEED_MAX);
 
-  // Otherwise, brake motor
+    // Already looks like we're at speed, so just use normal throttle setting
+    } else {
+      motor_accel.go();
+    }
+
+  // Otherwise, brake motor (and reset tach)
   } else {
     motor_accel.brake();
+    tach.reset();
   }
 
 }
@@ -256,6 +280,9 @@ void setup() {
   motor_accel.init();
   motor_push.init();
 
+  // Set initial tach state
+  tach.reset();
+
   // Setup interrupt handlers
   enableInterrupt(PIN_TACHOMETER, irq_tach_sens, FALLING);
   enableInterrupt(PIN_SW_PUSH,    irq_sw_push,   CHANGE);
@@ -292,8 +319,7 @@ void loop() {
   setMotorState();
 
   // Update display
-  //displayRefresh();
-  displayDebugData();
+  displayRefresh();
 
   // Put CPU to sleep until an event (likely one of our timer or pin change
   // interrupts) wakes it
