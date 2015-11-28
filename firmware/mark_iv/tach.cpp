@@ -14,19 +14,22 @@
 /*
  * Tachometer() - Measures your tacos...I mean speed.
  */
-Tachometer::Tachometer(uint8_t len) {
-  this->len = len;
-  this->diffs = new uint32_t[len];
-  for (uint8_t i=0; i<this->len; i++) {
-    this->diffs = 0;
-  }
+Tachometer::Tachometer(uint8_t ignored) {
 }
 
 /*
  * ~Tachometer() - Destructors? Who even calls those?
  */
 Tachometer::~Tachometer() {
-  delete this->diffs;
+}
+
+/*
+ * init() - Initialize sample array and other housekeeping shit.
+ */
+void Tachometer::init() {
+  for (uint8_t i=0; i<this->num_samples; i++) {
+    this->diffs[i] = 0;
+  }
 }
 
 /*
@@ -35,62 +38,92 @@ Tachometer::~Tachometer() {
  */
 void Tachometer::mark() {
 
+  // Ensure we've not been retriggered
+  usec now = micros();
+  if (now == this->last)
+    return;
+
   // We're entering new data so tag it for the bottom half handler
-  this->new_data = true;
+  //this->new_data = true;
 
   // Increment first so reader won't attempt to read an incomplete value (since
   // only reader can be interrupted, not us).
   uint8_t old_pos = this->pos;
-  this->pos = (this->pos + 1) % this->len;
+  this->pos = (this->pos + 1) % this->num_samples;
 
   // Save diff between now and last rotation in measurement buffer, then save
   // this timestamp.
-  uint32_t now = micros();
-  this->diffs[old_pos] = now - last;
+  this->diffs[old_pos] = now - this->last;
   this->last = now;
+
+}
+
+/*
+ * getDiffAt() - Retrieve diff value from buffer in a relatively irq friendly
+ * way.
+ *
+ * If you attempt to access the current writing position, will return 0.
+ *
+ */
+usec Tachometer::getDiffAt(uint8_t index) {
+  usec copy = 0;
+
+  // Bounds checking
+  if (index < 0 || index >= this->num_samples)
+    return 0;
+
+  // Critical section
+  noInterrupts();
+  if (this->pos != index) {
+    copy = this->diffs[index];
+  }
+  interrupts();
+
+  // Return data copy
+  return copy;
+
 }
 
 /*
  * rpm() - Calculates current rolling average RPMs.
  */
 float Tachometer::rpm() {
-  float sum_of_diff = 0;
+  usec sum_of_diff = 0;
+  uint8_t samples = 0;
 
-  for (uint8_t i=0; i<this->len; i++) {
-    if (i != pos) {
-      sum_of_diff += this->diffs[i]; 
+  for (uint8_t i=0; i<this->num_samples; i++) {
+
+    // Copy sample data in an interrupt safe way
+    usec sample = this->getDiffAt(i);
+
+    // If it's a valid sample, add to the running total
+    if (sample != 0) {
+      sum_of_diff += sample;
+      samples++;
     }
+
   }
 
-  float tau = sum_of_diff / (this->len - 1);
+  // Check for divide by zero b/c that's not a great plan
+  if (samples < 1)
+    return 0.0;
+
+  // Calculate average period over sample set
+  float tau = ((float)sum_of_diff) / ((float)samples);
+
+  // Convert to frequency
   float hz = 1000.0 * 1000.0 / tau;
 
+  // Return RPMs
   return hz * 60.0;
+
 }
 
 ////////////////////////////////////////////////////////////////////////
 // DEBUGGING
 ////////////////////////////////////////////////////////////////////////
 
-/*
- * dump_serial() - Dump debugging data to serial port.
- */
 #if 0
-void Tachometer::dump_serial() {
-
-  // With interrupts back on, we can now print out the debug data if it's fresh.
-  if (new_data_copy) {
-    for (uint8_t i=0; i<this->len; i++) {
-      Serial.print(i, DEC);
-      Serial.print(" ");
-      Serial.println(this->diffs[i], DEC);
-    }
-    Serial.println();
-  }
-
-}
-#endif
-
 bool Tachometer::test_and_set() {
 
   // This bit of funkiness is to ensure the value we're pulling from our flag
@@ -111,13 +144,6 @@ bool Tachometer::test_and_set() {
   return new_data_copy;
 
 }
-
-uint8_t Tachometer::getLen() {
-  return this->len;
-}
-
-volatile uint32_t *Tachometer::getDiffs() {
-  return this->diffs;
-}
+#endif
 
 // vi: syntax=arduino

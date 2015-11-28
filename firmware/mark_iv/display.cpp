@@ -92,14 +92,12 @@ void displayDebugData() {
   displayTextNormal();
   display.setTextSize(1);
 
-  uint8_t len = tach.getLen();
-  volatile uint32_t *diffs = tach.getDiffs();
-
-  for (uint8_t i=0; i<len; i++) {
+  for (uint8_t i=0; i<tach.num_samples; i++) {
+    usec sample = tach.getDiffAt(i);
     display.setCursor(0, 8*i);
     display.print(i, DEC);
     display.setCursor(12, 8*i);
-    display.print(diffs[i], DEC);
+    display.print(sample, DEC);
   }
 
   uint32_t now = millis();
@@ -111,13 +109,22 @@ void displayDebugData() {
   s = s % 60;
   m = m % 60;
 
-  display.setCursor(0, 8*(len+1));
+  display.setCursor(0, 8*(tach.num_samples+1));
+  display.print(tach.rpm(), DEC);
+
+  display.setCursor(0, 8*(tach.num_samples+2));
+
+  if (h < 10) display.print(0, DEC);
   display.print(h);
-  display.setCursor(12, 8*(len+1));
+
+  //display.setCursor(12, 8*(len+1));
   display.print(":");
+  if (m < 10) display.print(0, DEC);
   display.print(m);
-  display.setCursor(30, 8*(len+1));
+
+  //display.setCursor(30, 8*(len+1));
   display.print(":");
+  if (s < 10) display.print(0, DEC);
   display.print(s);
 
   display.display();
