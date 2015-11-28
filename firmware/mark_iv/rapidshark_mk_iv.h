@@ -100,6 +100,7 @@ void displayTextNormal();
 void displayTextFlipped();
 void displayRefresh();
 void displayInit();
+void displayDebugData();
 
 void setup();
 void loop();

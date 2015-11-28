@@ -292,7 +292,8 @@ void loop() {
   setMotorState();
 
   // Update display
-  displayRefresh();
+  //displayRefresh();
+  displayDebugData();
 
   // Put CPU to sleep until an event (likely one of our timer or pin change
   // interrupts) wakes it

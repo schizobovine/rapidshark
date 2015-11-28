@@ -81,6 +81,49 @@ extern Tachometer tach;
 ////////////////////////////////////////////////////////////////////////
 
 /*
+ * displayDebugData
+ *
+ * Display debugging info instead of normal display.
+ *
+ */
+void displayDebugData() {
+  display.clearDisplay();
+
+  displayTextNormal();
+  display.setTextSize(1);
+
+  uint8_t len = tach.getLen();
+  volatile uint32_t *diffs = tach.getDiffs();
+
+  for (uint8_t i=0; i<len; i++) {
+    display.setCursor(0, 8*i);
+    display.print(i, DEC);
+    display.setCursor(12, 8*i);
+    display.print(diffs[i], DEC);
+  }
+
+  uint32_t now = millis();
+  uint8_t h, m, s;
+
+  s = now / 1000;
+  m = s / 60;
+  h = m / 60;
+  s = s % 60;
+  m = m % 60;
+
+  display.setCursor(0, 8*(len+1));
+  display.print(h);
+  display.setCursor(12, 8*(len+1));
+  display.print(":");
+  display.print(m);
+  display.setCursor(30, 8*(len+1));
+  display.print(":");
+  display.print(s);
+
+  display.display();
+}
+
+/*
  * displayRefresh
  *
  * Update status information on the display.
