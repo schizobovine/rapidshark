@@ -77,7 +77,7 @@ extern FireMode fireMode;
 extern Tachometer tach;
 
 // Maximum RPM for display
-extern volatile float max_rpm;
+extern volatile float _max_rpm;
 
 ////////////////////////////////////////////////////////////////////////
 // DISPLAY FUNCTIONS
@@ -128,7 +128,7 @@ void displayRefresh() {
   if (motor_accel.isGoing()) {
     displayDecimal(60, 56, tach.rpm());
   } else {
-    displayDecimal(60, 56, tach.rpm());
+    displayDecimal(60, 56, _max_rpm);
   }
 
   displayDecimal(96, 40, motor_accel.getSpeed());
