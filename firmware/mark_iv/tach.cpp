@@ -83,8 +83,8 @@ void Tachometer::mark() {
 uint16_t Tachometer::tau() {
   if (this->num_samples == this->total_samples) {     //try to take compile-time
     return this->running_total / this->total_samples; //advantage of constant
-  } else if (this->num_samples > 0) {
-    return this->running_total / this->num_samples;
+  //} else if (this->num_samples > 0) {
+  //  return this->running_total / this->num_samples;
   } else {
     return 0;
   }

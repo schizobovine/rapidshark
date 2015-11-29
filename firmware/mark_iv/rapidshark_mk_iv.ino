@@ -86,11 +86,9 @@ FireMode fireMode(MODE_FULL_AUTO);
  *
  */
 bool finishedAccel() {
-  if (motor_accel.isGoing()) {
-    uint16_t tau = tach.tau();
-    if (tau != 0 && tau >= MOTOR_ACCEL_SET_PERIOD) {
-      return true;
-    }
+  uint16_t tau = tach.tau();
+  if (tau != 0 && tau <= MOTOR_ACCEL_SET_PERIOD) {
+    return true;
   }
   return false;
 }
@@ -142,10 +140,12 @@ void setMotorState() {
 
     // If we're not at speed, floor it
     if (finishedAccel()) {
-      motor_accel.go(MOTOR_ACCEL_SPEED_MAX);
+      motor_accel.setSpeed(MOTOR_ACCEL_SPEED_MAX);
+      motor_accel.go();
 
     // Already looks like we're at speed, so just use normal throttle setting
     } else {
+      motor_accel.setSpeed(MOTOR_ACCEL_SPEED);
       motor_accel.go();
     }
 
@@ -284,9 +284,9 @@ void setup() {
   tach.reset();
 
   // Setup interrupt handlers
-  enableInterrupt(PIN_TACHOMETER, irq_tach_sens, FALLING);
+  enableInterrupt(PIN_TACHOMETER, irq_tach_sens, CHANGE);
   enableInterrupt(PIN_SW_PUSH,    irq_sw_push,   CHANGE);
-  enableInterrupt(PIN_SW_CLIP,    irq_sw_clip,   FALLING);
+  enableInterrupt(PIN_SW_CLIP,    irq_sw_clip,   CHANGE);
   enableInterrupt(PIN_SW_FIRE,    irq_sw_fire,   CHANGE);
   enableInterrupt(PIN_SW_ACCEL,   irq_sw_accel,  CHANGE);
   enableInterrupt(PIN_BUTT_X,     irq_butt_x,    CHANGE);
