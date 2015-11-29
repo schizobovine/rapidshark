@@ -76,6 +76,9 @@ extern FireMode fireMode;
 // Monitor flywheel rotational velocity
 extern Tachometer tach;
 
+// Maximum RPM for display
+extern volatile float max_rpm;
+
 ////////////////////////////////////////////////////////////////////////
 // DISPLAY FUNCTIONS
 ////////////////////////////////////////////////////////////////////////
@@ -121,10 +124,18 @@ void displayRefresh() {
 
   displayLabel(66, 40, " FLY", (motor_accel.isGoing()));
   displayLabel(66, 48, "PUSH", (motor_push.isGoing()));
-  displayDecimal(60, 56, tach.rpm());
+
+  if (motor_accel.isGoing()) {
+    displayDecimal(60, 56, tach.rpm());
+  } else {
+    displayDecimal(60, 56, tach.rpm());
+  }
 
   displayDecimal(96, 40, motor_accel.getSpeed());
   displayDecimal(96, 48, motor_push.getSpeed());
+  if (finishedAccel()) {
+    displayLabel(96, 56, "ACC", true);
+  }
 
   display.display();
 

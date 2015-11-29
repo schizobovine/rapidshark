@@ -24,6 +24,7 @@ class Tachometer {
     void mark();
     uint16_t tau();
     float rpm();
+    float getMaxRPM();
 
     // Total number of samples to store
     static const uint8_t total_samples = 8;
@@ -49,6 +50,9 @@ class Tachometer {
     // Current running total so we don't need to access the full buffer for
     // this every single rpm() call
     volatile uint32_t running_total;
+
+    // Maximum RPM value
+    volatile float max_rpm;
 
 };
 

@@ -73,6 +73,9 @@ AmmoClip ammo_clip(CLIP_DEFAULT);
 // Current fire control mode
 FireMode fireMode(MODE_FULL_AUTO);
 
+// Maximum RPM for display
+volatile float max_rpm = 0.0;
+
 ////////////////////////////////////////////////////////////////////////
 // MOTOR STATE MACHINE
 ////////////////////////////////////////////////////////////////////////
@@ -152,6 +155,7 @@ void setMotorState() {
   // Otherwise, brake motor (and reset tach)
   } else {
     motor_accel.brake();
+    max_rpm = tach.getMaxRPM();
     tach.reset();
   }
 

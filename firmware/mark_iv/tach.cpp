@@ -40,6 +40,7 @@ void Tachometer::reset() {
   this->last = 0;
   this->num_samples = 0;
   this->pos = 0;
+  this->max_rpm = 0.0;
 }
 
 /*
@@ -102,10 +103,21 @@ float Tachometer::rpm() {
 
   // Calculate average period over sample set then convert to frequency
   float hz = 1000.0 * 1000.0 / this->tau();
+  float _rpm = 60.0 * hz;
+
+  // Store max RPM for later
+  this->max_rpm = max(this->max_rpm, _rpm);
 
   // Return RPMs
-  return hz * 60.0;
+  return _rpm;
 
+}
+
+/*
+ * getMaxRPM() - Get maximum RPM from this run
+ */
+float Tachometer::getMaxRPM() {
+  return this->max_rpm;
 }
 
 // vi: syntax=arduino
