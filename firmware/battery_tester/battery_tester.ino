@@ -10,6 +10,7 @@
 #include <Adafruit_SSD1306.h>
 #include <SPI.h>
 #include <Wire.h>
+#include <avr/sleep.h>
 
 ////////////////////////////////////////////////////////////////////////
 // CONSTANTS
