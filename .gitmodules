@@ -17,6 +17,3 @@
 	path = firmware/battery_tester/lib/Adafruit_SSD1306
 	url = git@github.com:schizobovine/Adafruit_SSD1306.git
 	branch = 32
-[submodule "firmware/battery_tester/lib/Adafruit-GFX-Library"]
-	path = firmware/battery_tester/lib/Adafruit-GFX-Library
-	url = git@github.com:adafruit/Adafruit-GFX-Library.git
