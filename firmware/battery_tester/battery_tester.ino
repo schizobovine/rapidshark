@@ -27,7 +27,7 @@
 // Display params
 #define DISPLAY_ADDR     SSD1306_I2C_ADDRESS
 #define DISPLAY_MODE     SSD1306_SWITCHCAPVCC
-#define DISPLAY_TEXTSIZE 2
+#define DISPLAY_TEXTSIZE 1
 #define DISPLAY_COLOR    WHITE
 #define DISPLAY_RST_PIN  8
 
@@ -37,6 +37,11 @@
 
 // Display controller object
 Adafruit_SSD1306 display(DISPLAY_RST_PIN);
+
+// Current raw readings
+float raw_cell1v = 0.0;
+float raw_cell2v = 0.0;
+float raw_cell3v = 0.0;
 
 // Current values for voltage
 float cell1v = 0.0;
@@ -50,12 +55,39 @@ float cell3v = 0.0;
 void refresh_display() {
   display.clearDisplay();
   display.setCursor(0, 0);
-  display.print(cell1v, DEC);
+  display.print(cell1v, 3);
   display.setCursor(42, 0);
-  display.print(cell2v, DEC);
+  display.print(cell2v, 3);
   display.setCursor(84, 0);
-  display.print(cell3v, DEC);
+  display.print(cell3v, 3);
   display.display();
+}
+
+float convert_to_lipo(int reading) {
+  const float refv = 5.0;
+  const float res = 1024;
+  const float r1 = 1000;
+  const float r2 = 3000;
+
+  float v_in = refv / res * reading;
+  float v_bat = v_in * (r1 + r2) / r2;
+
+  return v_bat;
+}
+
+float read_voltage(uint8_t pin) {
+  
+  const float refv = 5.0;
+  const float res = 1024;
+  const float r1 = 1000;
+  const float r2 = 3000;
+
+  float reading = analogRead(pin);
+  float v_in = refv / res * reading;
+  float v_bat = v_in * (r1 + r2) / r2;
+
+  return v_bat;
+
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -81,6 +113,9 @@ void setup() {
   // Set sleep mode for later use
   set_sleep_mode(SLEEP_MODE_IDLE);
 
+  // Set analog reference
+  analogReference(EXTERNAL);
+
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -88,6 +123,16 @@ void setup() {
 ////////////////////////////////////////////////////////////////////////
 
 void loop() {
+
+  // Read analog values
+  raw_cell1v = analogRead(CELL1);
+  raw_cell2v = analogRead(CELL2);
+  raw_cell3v = analogRead(CELL3);
+
+  // Convert to battery voltage
+  cell1v = read_voltage(CELL1);
+  cell2v = read_voltage(CELL2);
+  cell3v = read_voltage(CELL3);
 
   // Display stuff
   refresh_display();
