@@ -183,7 +183,7 @@
 <text x="32.5" y="12" size="0.9" layer="21" font="vector" ratio="12" rot="R90" align="center">GND</text>
 <text x="12.25" y="3.5" size="0.9" layer="21" font="vector" ratio="12" rot="R180" align="center">5V</text>
 <text x="26.5" y="10.2" size="0.9" layer="21" font="vector" ratio="12" rot="R270" align="center">5V</text>
-<text x="38.6" y="13" size="0.8" layer="21" font="vector" ratio="12" rot="R270" align="center">5V</text>
+<text x="38.6" y="13" size="0.8" layer="21" font="vector" ratio="12" rot="R270" align="center">GND</text>
 <text x="14" y="3.5" size="0.9" layer="21" font="vector" ratio="12" rot="R180" align="center">B</text>
 <text x="16" y="3.5" size="0.9" layer="21" font="vector" ratio="12" rot="R180" align="center">PWM</text>
 <text x="18.1" y="3.5" size="0.9" layer="21" font="vector" ratio="12" rot="R180" align="center">A</text>
@@ -197,7 +197,7 @@
 <text x="32.5" y="6" size="0.9" layer="21" font="vector" ratio="12" rot="R90" align="center">X</text>
 <text x="32.5" y="8" size="0.9" layer="21" font="vector" ratio="12" rot="R90" align="center">Y</text>
 <text x="32.5" y="10" size="0.9" layer="21" font="vector" ratio="12" rot="R90" align="center">Z</text>
-<text x="38.6" y="10.5" size="0.8" layer="21" font="vector" ratio="12" rot="R270" align="center">GND</text>
+<text x="38.6" y="10.5" size="0.8" layer="21" font="vector" ratio="12" rot="R270" align="center">5V</text>
 <text x="9.75" y="14.5" size="0.9" layer="21" font="vector" ratio="12" rot="R180" align="center">GND</text>
 <text x="7.25" y="14.5" size="0.9" layer="21" font="vector" ratio="12" rot="R180" align="center">VIN</text>
 <text x="12.25" y="14.5" size="0.9" layer="21" font="vector" ratio="12" rot="R180" align="center">5V</text>
@@ -211,7 +211,7 @@ Breakout</text>
 <text x="2.5" y="2" size="1" layer="16" font="vector" ratio="16" rot="MR180" align="center">&gt;VERSION</text>
 </plain>
 <libraries>
-<library name="A_butts">
+<library name="a_parts">
 <packages>
 <package name="DUMMY">
 <description>NOTHING HERE!!! For when you want a symbol with no package as an option against symbols with a package.</description>
@@ -448,20 +448,35 @@ Breakout</text>
 <vertex x="0.66" y="-0.8"/>
 </polygon>
 </package>
-<package name="R0805">
-<description>&lt;b&gt;RESISTOR&lt;/b&gt;&lt;p&gt;</description>
-<wire x1="-1.97" y1="0.97" x2="1.97" y2="0.97" width="0.0508" layer="39"/>
-<wire x1="1.97" y1="0.97" x2="1.97" y2="-0.97" width="0.0508" layer="39"/>
-<wire x1="1.97" y1="-0.97" x2="-1.97" y2="-0.97" width="0.0508" layer="39"/>
-<wire x1="-1.97" y1="-0.97" x2="-1.97" y2="0.97" width="0.0508" layer="39"/>
-<smd name="1" x="-0.95" y="0" dx="1.3" dy="1.5" layer="1"/>
-<smd name="2" x="0.95" y="0" dx="1.3" dy="1.5" layer="1"/>
-<text x="-2" y="0" size="0.7" layer="25" font="vector" ratio="12" rot="R90" align="bottom-center">&gt;NAME</text>
-<text x="2" y="0" size="0.6" layer="27" font="vector" ratio="12" rot="R90" align="top-center">&gt;VALUE</text>
-<wire x1="-1.85" y1="-1" x2="-1.85" y2="1" width="0.1524" layer="21"/>
-<wire x1="-1.85" y1="1" x2="1.85" y2="1" width="0.1524" layer="21"/>
-<wire x1="1.85" y1="1" x2="1.85" y2="-1" width="0.1524" layer="21"/>
-<wire x1="1.85" y1="-1" x2="-1.85" y2="-1" width="0.1524" layer="21"/>
+<package name="R0603-TIGHTER">
+<wire x1="-1.4" y1="0.8" x2="1.4" y2="0.8" width="0.1524" layer="39"/>
+<wire x1="1.4" y1="0.8" x2="1.4" y2="-0.8" width="0.1524" layer="39"/>
+<wire x1="1.4" y1="-0.8" x2="-1.4" y2="-0.8" width="0.1524" layer="39"/>
+<wire x1="-1.4" y1="-0.8" x2="-1.4" y2="0.8" width="0.1524" layer="39"/>
+<smd name="1" x="-0.75" y="0" dx="0.8" dy="1.1" layer="1"/>
+<smd name="2" x="0.75" y="0" dx="0.8" dy="1.1" layer="1"/>
+<text x="-1.55" y="0" size="0.7" layer="25" font="vector" ratio="12" rot="R90" align="bottom-center">&gt;NAME</text>
+<text x="1.55" y="0" size="0.5" layer="27" font="vector" ratio="12" rot="R90" align="top-center">&gt;VALUE</text>
+<wire x1="-1.4" y1="-0.8" x2="-1.4" y2="0.8" width="0.1524" layer="21"/>
+<wire x1="-1.4" y1="0.8" x2="1.4" y2="0.8" width="0.1524" layer="21"/>
+<wire x1="1.4" y1="0.8" x2="1.4" y2="-0.8" width="0.1524" layer="21"/>
+<wire x1="1.4" y1="-0.8" x2="-1.4" y2="-0.8" width="0.1524" layer="21"/>
+<rectangle x1="-0.8" y1="-0.4" x2="0.8" y2="0.4" layer="51"/>
+</package>
+<package name="JST-3-PH-VERT-PTH">
+<description>This 3-pin connector mates with the JST cable sold on SparkFun.</description>
+<wire x1="-1.95" y1="-1.7" x2="-1.95" y2="2.8" width="0.2032" layer="21"/>
+<wire x1="-1.95" y1="2.8" x2="5.95" y2="2.8" width="0.2032" layer="21"/>
+<wire x1="5.95" y1="2.8" x2="5.95" y2="-1.7" width="0.2032" layer="21"/>
+<wire x1="5.95" y1="-1.7" x2="3" y2="-1.7" width="0.2032" layer="21"/>
+<wire x1="1" y1="-1.7" x2="-1.95" y2="-1.7" width="0.2032" layer="21"/>
+<wire x1="1" y1="-1.2" x2="3" y2="-1.2" width="0.2032" layer="21"/>
+<wire x1="3" y1="-1.2" x2="3" y2="-1.7" width="0.2032" layer="21"/>
+<wire x1="1" y1="-1.2" x2="1" y2="-1.7" width="0.2032" layer="21"/>
+<pad name="1" x="0" y="0" drill="0.9" diameter="1.4224" shape="octagon"/>
+<pad name="2" x="2" y="0" drill="0.9" diameter="1.4224" shape="octagon"/>
+<pad name="3" x="4" y="0" drill="0.9" diameter="1.4224" shape="octagon"/>
+<text x="2" y="-1.85" size="0.6096" layer="25" font="vector" ratio="12" align="top-center">&gt;NAME</text>
 </package>
 </packages>
 </library>
@@ -651,47 +666,46 @@ Please make sure your boards conform to these design rules.</description>
 </pass>
 </autorouter>
 <elements>
-<element name="FRAME1" library="A_butts" package="DUMMY" value="FRAME-LETTERNO_PACKAGE" x="0" y="0" rot="MR270">
+<element name="FRAME1" library="a_parts" package="DUMMY" value="FRAME-LETTERNO_PACKAGE" x="0" y="0" rot="MR270">
 <attribute name="VERSION" value="v1.C" x="1.27" y="-13.97" size="1.778" layer="28" rot="MR270" display="off"/>
 <attribute name="DESIGNER" value="sean@yak.net" x="1.27" y="-13.97" size="1.778" layer="28" rot="MR270" display="off"/>
 </element>
-<element name="TRIG" library="A_butts" package="JST-4-PH-VERT-PTH" value="M04JST-PTH-VERT" x="23" y="12" smashed="yes" rot="R270">
+<element name="TRIG" library="a_parts" package="JST-4-PH-VERT-PTH" value="M04JST-PTH-VERT" x="23" y="12" smashed="yes" rot="R270">
 <attribute name="NAME" x="23.5" y="14.2" size="0.8" layer="25" font="vector" ratio="12" rot="SR0" align="bottom-center"/>
 </element>
-<element name="CLIP" library="A_butts" package="JST-4-PH-VERT-PTH" value="M04JST-PTH-VERT" x="29" y="12" smashed="yes" rot="R270">
+<element name="CLIP" library="a_parts" package="JST-4-PH-VERT-PTH" value="M04JST-PTH-VERT" x="29" y="12" smashed="yes" rot="R270">
 <attribute name="NAME" x="29.5" y="14.25" size="0.8" layer="25" font="vector" ratio="12" rot="SR0" align="bottom-center"/>
 </element>
-<element name="U1" library="A_butts" package="ADAFRUIT_METRO_MINI_BIGHOLES" value="ADAFRUIT_METRO_MINIBIGHOLES" x="22" y="9" locked="yes"/>
-<element name="PUSHER" library="A_butts" package="JST-6-PH-VERT-PTH" value="M06JST-PH-PTH-VERT" x="12.75" y="7" smashed="yes" rot="R180">
+<element name="U1" library="a_parts" package="ADAFRUIT_METRO_MINI_BIGHOLES" value="ADAFRUIT_METRO_MINIBIGHOLES" x="22" y="9" locked="yes"/>
+<element name="PUSHER" library="a_parts" package="JST-6-PH-VERT-PTH" value="M06JST-PH-PTH-VERT" x="12.75" y="7" smashed="yes" rot="R180">
 <attribute name="NAME" x="5.5" y="6.5" size="0.8" layer="25" font="vector" ratio="12" rot="R90" align="bottom-center"/>
 </element>
-<element name="ACCEL" library="A_butts" package="JST-6-PH-VERT-PTH" value="M06JST-PH-PTH-VERT" x="12.75" y="12" smashed="yes" rot="R180">
+<element name="ACCEL" library="a_parts" package="JST-6-PH-VERT-PTH" value="M06JST-PH-PTH-VERT" x="12.75" y="12" smashed="yes" rot="R180">
 <attribute name="NAME" x="5.5" y="11.5" size="0.8" layer="25" font="vector" ratio="12" rot="R90" align="bottom-center"/>
 </element>
-<element name="TVS" library="A_butts" package="SMA-DIODE-TVS-BIDIR" value="" x="2.5" y="6" smashed="yes" rot="R90">
+<element name="TVS" library="a_parts" package="SMA-DIODE-TVS-BIDIR" value="" x="2.5" y="6" smashed="yes" rot="R90">
 <attribute name="NAME" x="2.5" y="3" size="0.7" layer="25" font="vector" ratio="12" rot="R180" align="bottom-center"/>
 <attribute name="VALUE" x="2.5" y="9" size="0.6" layer="27" font="vector" ratio="12" rot="R180" align="top-center"/>
 </element>
-<element name="F1" library="A_butts" package="PTC-1206" value="120mA" x="2.5" y="12.5" smashed="yes" rot="R90">
+<element name="F1" library="a_parts" package="PTC-1206" value="120mA" x="2.5" y="12.5" smashed="yes" rot="R90">
 <attribute name="PROD_ID" value="RES-11150" x="10" y="12.5" size="0.5" layer="27" font="vector" ratio="12" rot="R90" display="off"/>
 <attribute name="NAME" x="2.5" y="9.98" size="0.7" layer="25" font="vector" ratio="12" rot="R180" align="bottom-center"/>
 </element>
-<element name="BUTT" library="A_butts" package="JST-4-PH-VERT-PTH" value="M04JST-PTH-VERT" x="35" y="12" smashed="yes" rot="R270">
+<element name="BUTT" library="a_parts" package="JST-4-PH-VERT-PTH" value="M04JST-PTH-VERT" x="35" y="12" smashed="yes" rot="R270">
 <attribute name="NAME" x="35.5" y="14.25" size="0.8" layer="25" font="vector" ratio="12" rot="R180" align="top-center"/>
 </element>
-<element name="U$2" library="A_butts" package="COW_SMALL" value="" x="3.5" y="8.5" rot="MR0"/>
-<element name="U$3" library="A_butts" package="OSHWLOGO_TINY_SILKONLY" value="" x="41.2" y="1.7" rot="MR0"/>
-<element name="R1" library="A_butts" package="R0805" value="4K7" x="38" y="12" smashed="yes" rot="MR90">
-<attribute name="NAME" x="39.1" y="12" size="0.7" layer="26" font="vector" ratio="12" rot="MR90" align="bottom-center"/>
-<attribute name="VALUE" x="36.9" y="12" size="0.6" layer="26" font="vector" ratio="12" rot="MR90" align="top-center"/>
+<element name="U$2" library="a_parts" package="COW_SMALL" value="" x="3.5" y="8.5" rot="MR0"/>
+<element name="U$3" library="a_parts" package="OSHWLOGO_TINY_SILKONLY" value="" x="41.2" y="1.7" rot="MR0"/>
+<element name="R1" library="a_parts" package="R0603-TIGHTER" value="4K7" x="38" y="11" smashed="yes" rot="MR90">
+<attribute name="NAME" x="38" y="9.45" size="0.7" layer="26" font="vector" ratio="12" rot="MR180" align="bottom-center"/>
 </element>
-<element name="R2" library="A_butts" package="R0805" value="4K7" x="38" y="8" smashed="yes" rot="MR90">
-<attribute name="NAME" x="39.1" y="8" size="0.7" layer="26" font="vector" ratio="12" rot="MR90" align="bottom-center"/>
-<attribute name="VALUE" x="36.9" y="8" size="0.6" layer="26" font="vector" ratio="12" rot="MR90" align="top-center"/>
+<element name="R2" library="a_parts" package="R0603-TIGHTER" value="4K7" x="38" y="7" smashed="yes" rot="MR90">
+<attribute name="NAME" x="38" y="5.45" size="0.7" layer="26" font="vector" ratio="12" rot="MR180" align="bottom-center"/>
 </element>
-<element name="DISP" library="A_butts" package="JST-4-PH-VERT-PTH" value="M04JST-PTH-VERT" x="41.2" y="12" smashed="yes" rot="R270">
+<element name="DISP" library="a_parts" package="JST-4-PH-VERT-PTH" value="M04JST-PTH-VERT" x="41.2" y="12" smashed="yes" rot="R270">
 <attribute name="NAME" x="41.2" y="14.25" size="0.8" layer="25" font="vector" ratio="12" rot="R180" align="top-center"/>
 </element>
+<element name="JP1" library="a_parts" package="JST-3-PH-VERT-PTH" value="M03JST-PTH-VERT" x="1.1" y="-4"/>
 </elements>
 <signals>
 <signal name="GND">
@@ -721,14 +735,20 @@ Please make sure your boards conform to these design rules.</description>
 <contactref element="TVS" pad="1"/>
 <contactref element="U1" pad="20"/>
 <contactref element="U1" pad="19"/>
-<contactref element="ACCEL" pad="5"/>
 <contactref element="BUTT" pad="1"/>
-<contactref element="U1" pad="26"/>
-<contactref element="DISP" pad="2"/>
+<contactref element="DISP" pad="1"/>
+<contactref element="ACCEL" pad="6"/>
+<wire x1="35" y1="12" x2="41.2" y2="12" width="0" layer="19" extent="1-1"/>
+<wire x1="29" y1="12" x2="35" y2="12" width="0" layer="19" extent="1-1"/>
+<wire x1="23" y1="12" x2="29" y2="12" width="0" layer="19" extent="1-1"/>
+<wire x1="18.19" y1="1.38" x2="23" y2="12" width="0" layer="19" extent="1-1"/>
+<wire x1="15.65" y1="1.38" x2="18.19" y2="1.38" width="0" layer="19" extent="1-1"/>
+<wire x1="9.75" y1="7" x2="15.65" y2="1.38" width="0" layer="19" extent="1-1"/>
+<wire x1="7.75" y1="12" x2="9.75" y2="7" width="0" layer="19" extent="1-1"/>
+<wire x1="2.5" y1="3.85" x2="9.75" y2="7" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="5V">
 <contactref element="U1" pad="18"/>
-<contactref element="ACCEL" pad="4"/>
 <contactref element="PUSHER" pad="4"/>
 <contactref element="CLIP" pad="2"/>
 <wire x1="11.75" y1="7" x2="11.75" y2="7.75" width="0.4064" layer="1"/>
@@ -740,10 +760,8 @@ Please make sure your boards conform to these design rules.</description>
 <wire x1="25.5" y1="5.5" x2="25.5" y2="8.5" width="0.4064" layer="1"/>
 <wire x1="25.5" y1="8.5" x2="27" y2="10" width="0.4064" layer="1"/>
 <wire x1="27" y1="10" x2="29" y2="10" width="0.4064" layer="1"/>
-<wire x1="11.75" y1="12" x2="11.75" y2="10.25" width="0.4064" layer="1"/>
-<wire x1="11.75" y1="10.25" x2="13" y2="9" width="0.4064" layer="1"/>
-<wire x1="38.5" y1="12" x2="37" y2="10.5" width="0.4064" layer="1"/>
-<wire x1="37" y1="10.5" x2="37" y2="5" width="0.4064" layer="1"/>
+<wire x1="11.75" y1="10.25" x2="13" y2="9" width="0" layer="19" extent="1-16"/>
+<wire x1="37" y1="8.5" x2="37" y2="5" width="0.4064" layer="1"/>
 <wire x1="37" y1="5" x2="35.5" y2="3.5" width="0.4064" layer="1"/>
 <wire x1="35.5" y1="3.5" x2="23.5" y2="3.5" width="0.4064" layer="1"/>
 <wire x1="20.5" y1="6" x2="23" y2="3.5" width="0.4064" layer="1"/>
@@ -752,16 +770,19 @@ Please make sure your boards conform to these design rules.</description>
 <wire x1="11.75" y1="2.74" x2="13.11" y2="1.38" width="0.4064" layer="16"/>
 <contactref element="R1" pad="2"/>
 <contactref element="R2" pad="2"/>
-<wire x1="38" y1="12.95" x2="39.65" y2="12.95" width="0.3048" layer="16"/>
-<wire x1="39.65" y1="12.95" x2="40.6" y2="12" width="0.3048" layer="16"/>
-<wire x1="38" y1="8.95" x2="37.55" y2="8.95" width="0.3048" layer="16"/>
-<wire x1="37.55" y1="8.95" x2="36.5" y2="10" width="0.3048" layer="16"/>
-<wire x1="36.5" y1="10" x2="36.5" y2="12" width="0.3048" layer="16"/>
-<wire x1="36.5" y1="12" x2="37.45" y2="12.95" width="0.3048" layer="16"/>
-<wire x1="37.45" y1="12.95" x2="38" y2="12.95" width="0.3048" layer="16"/>
-<contactref element="DISP" pad="1"/>
-<wire x1="41.2" y1="12" x2="38.5" y2="12" width="0.4064" layer="1"/>
-<wire x1="40.6" y1="12" x2="41.2" y2="12" width="0.3048" layer="16"/>
+<wire x1="36.5" y1="11" x2="36.5" y2="8.5" width="0.3048" layer="16"/>
+<wire x1="36.5" y1="8.5" x2="37.25" y2="7.75" width="0.3048" layer="16"/>
+<wire x1="37.25" y1="7.75" x2="38" y2="7.75" width="0.3048" layer="16"/>
+<wire x1="38" y1="11.75" x2="37.25" y2="11.75" width="0.3048" layer="16"/>
+<wire x1="37.25" y1="11.75" x2="36.5" y2="11" width="0.3048" layer="16"/>
+<contactref element="DISP" pad="2"/>
+<wire x1="37" y1="8.5" x2="38.5" y2="10" width="0.4064" layer="1"/>
+<wire x1="38.5" y1="10" x2="41.2" y2="10" width="0.4064" layer="1"/>
+<wire x1="38" y1="11.75" x2="38.75" y2="11.75" width="0.3048" layer="16"/>
+<wire x1="38.75" y1="11.75" x2="40.5" y2="10" width="0.3048" layer="16"/>
+<wire x1="40.5" y1="10" x2="41.2" y2="10" width="0.3048" layer="16"/>
+<contactref element="ACCEL" pad="5"/>
+<wire x1="11.75" y1="10.25" x2="9.75" y2="12" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="SDA">
 <contactref element="U1" pad="27"/>
@@ -770,13 +791,11 @@ Please make sure your boards conform to these design rules.</description>
 <wire x1="38.5" y1="7" x2="38.5" y2="4.5" width="0.3048" layer="1"/>
 <wire x1="38.5" y1="4.5" x2="35.97" y2="1.97" width="0.3048" layer="1"/>
 <wire x1="35.97" y1="1.97" x2="35.97" y2="1.38" width="0.3048" layer="1"/>
-<wire x1="38" y1="11.05" x2="38.95" y2="11.05" width="0.3048" layer="16"/>
-<wire x1="38.95" y1="11.05" x2="39.5" y2="10.5" width="0.3048" layer="16"/>
-<wire x1="39.5" y1="10.5" x2="39.5" y2="8.9" width="0.3048" layer="16"/>
-<wire x1="39.5" y1="8.9" x2="40.4" y2="8" width="0.3048" layer="16"/>
 <contactref element="DISP" pad="3"/>
 <wire x1="39.5" y1="8" x2="41.2" y2="8" width="0.3048" layer="1"/>
-<wire x1="40.4" y1="8" x2="41.2" y2="8" width="0.3048" layer="16"/>
+<wire x1="38" y1="10.25" x2="38.25" y2="10.25" width="0.3048" layer="16"/>
+<wire x1="38.25" y1="10.25" x2="40.5" y2="8" width="0.3048" layer="16"/>
+<wire x1="40.5" y1="8" x2="41.2" y2="8" width="0.3048" layer="16"/>
 </signal>
 <signal name="SCL">
 <contactref element="U1" pad="28"/>
@@ -784,12 +803,11 @@ Please make sure your boards conform to these design rules.</description>
 <wire x1="41" y1="6" x2="39.5" y2="4.5" width="0.3048" layer="1"/>
 <wire x1="39.5" y1="4.5" x2="39.5" y2="2.37" width="0.3048" layer="1"/>
 <wire x1="39.5" y1="2.37" x2="38.51" y2="1.38" width="0.3048" layer="1"/>
-<wire x1="38" y1="7.05" x2="38.05" y2="7" width="0.3048" layer="16"/>
-<wire x1="38.05" y1="7" x2="39.5" y2="7" width="0.3048" layer="16"/>
-<wire x1="39.5" y1="7" x2="40.5" y2="6" width="0.3048" layer="16"/>
 <contactref element="DISP" pad="4"/>
 <wire x1="40.5" y1="6" x2="41.2" y2="6" width="0.3048" layer="16"/>
 <wire x1="41" y1="6" x2="41.2" y2="6" width="0.3048" layer="1"/>
+<wire x1="40.5" y1="6" x2="40.25" y2="6.25" width="0.3048" layer="16"/>
+<wire x1="38" y1="6.25" x2="40.25" y2="6.25" width="0.3048" layer="16"/>
 </signal>
 <signal name="DART">
 <contactref element="CLIP" pad="3"/>
@@ -868,23 +886,11 @@ Please make sure your boards conform to these design rules.</description>
 <wire x1="7" y1="15" x2="8.03" y2="16.03" width="0.3048" layer="16"/>
 <wire x1="8.03" y1="16.03" x2="8.03" y2="16.62" width="0.3048" layer="16"/>
 </signal>
-<signal name="ACCEL_A">
-<contactref element="ACCEL" pad="1"/>
-<contactref element="U1" pad="9"/>
-<wire x1="18.19" y1="16.62" x2="17.75" y2="16.18" width="0.3048" layer="16"/>
-<wire x1="17.75" y1="16.18" x2="17.75" y2="12" width="0.3048" layer="16"/>
-</signal>
 <signal name="ACCEL_PWM">
 <contactref element="ACCEL" pad="2"/>
 <contactref element="U1" pad="10"/>
 <wire x1="15.65" y1="16.62" x2="15.75" y2="16.52" width="0.3048" layer="16"/>
 <wire x1="15.75" y1="16.52" x2="15.75" y2="12" width="0.3048" layer="16"/>
-</signal>
-<signal name="ACCEL_B">
-<contactref element="ACCEL" pad="3"/>
-<contactref element="U1" pad="11"/>
-<wire x1="13.11" y1="16.62" x2="13.75" y2="15.98" width="0.3048" layer="16"/>
-<wire x1="13.75" y1="15.98" x2="13.75" y2="12" width="0.3048" layer="16"/>
 </signal>
 <signal name="N$1">
 <contactref element="F1" pad="1"/>
@@ -915,6 +921,15 @@ Please make sure your boards conform to these design rules.</description>
 <wire x1="28.5" y1="3.5" x2="27" y2="3.5" width="0.3048" layer="16"/>
 <wire x1="27" y1="3.5" x2="25.81" y2="2.31" width="0.3048" layer="16"/>
 <wire x1="25.81" y1="2.31" x2="25.81" y2="1.38" width="0.3048" layer="16"/>
+</signal>
+<signal name="N$2">
+<contactref element="U1" pad="9"/>
+</signal>
+<signal name="N$3">
+<contactref element="U1" pad="11"/>
+</signal>
+<signal name="N$4">
+<contactref element="U1" pad="14"/>
 </signal>
 </signals>
 </board>
