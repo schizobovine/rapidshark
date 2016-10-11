@@ -1,4 +1,5 @@
-ARDUINO_LIBS      := Adafruit_GFX Adafruit_SSD1306 SPI Wire
+ARDUINO_DIR       := $(HOME)/arduino/arduino-current/
+ARDUINO_LIBS      := Adafruit_GFX Adafruit_SSD1306 SPI Wire Bounce2
 ARDUINO_PORT      := /dev/ttyUSB0
 USER_LIB_PATH     := $(realpath ./lib)
 BOARD_TAG         := uno

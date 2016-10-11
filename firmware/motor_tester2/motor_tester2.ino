@@ -17,6 +17,7 @@
 #include <Wire.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
+#include <Bounce2.h>
 //#include <string.h>
 //#include <stdlib.h>
 //#include <avr/io.h>
@@ -28,8 +29,9 @@
 
 #define ENC_A      2
 #define ENC_B      3
-#define MOTOR_ON   4
+#define MOTOR_ON   12
 #define MOTOR_PWM  5
+#define ENC_RST    A0
 #define DISP_RST   A3
 
 ////////////////////////////////////////////////////////////////////////
@@ -39,8 +41,12 @@
 // Display
 Adafruit_SSD1306 display(DISP_RST);
 
+// Buttons
+Bounce butt_reset;
+
 // Holds the current speed state
 volatile uint8_t speed = 0;
+uint8_t old_speed = 255;
 
 // Motor on/off state via switch
 boolean motor_on = false;
@@ -57,11 +63,6 @@ boolean seen_b = false;
 void printStatus() {
   display.clearDisplay();
   display.setCursor(0, 0);
-  if (motor_on) {
-    digitalWrite(LED_BUILTIN, HIGH);
-  } else {
-    digitalWrite(LED_BUILTIN, LOW);
-  }
   display.println(speed, DEC);
   display.display();
 }
@@ -74,7 +75,7 @@ void intr_enc_a() {
   cli();
   reading = PIND & 0x0C;
   if ((reading == 0x0C) && seen_a) {
-    if (speed > 0)
+    //if (speed > 0)
       speed--;
     seen_a = false;
     seen_b = false;
@@ -88,11 +89,11 @@ void intr_enc_b() {
   cli();
   reading = PIND & 0x0C;
   if ((reading == 0x0C) && seen_b) {
-    if (speed < 0xFF)
+    //if (speed < 0xFF)
       speed++;
     seen_a = false;
     seen_b = false;
-  } else if (reading == 0x04) {
+  } else if (reading == 0x08) {
     seen_a = true;
   }
   sei();
@@ -119,6 +120,12 @@ void setup() {
   pinMode(ENC_B, INPUT_PULLUP);
   pinMode(MOTOR_ON, INPUT_PULLUP);
 
+  // Configure butt(ons)
+  butt_reset.attach(ENC_RST, INPUT_PULLUP, 10);
+
+  // Used as motor on status indicator
+  pinMode(LED_BUILTIN, OUTPUT);
+
   // Configure motor controller
   pinMode(MOTOR_PWM, OUTPUT);
   analogWrite(MOTOR_PWM, 0);
@@ -135,16 +142,27 @@ void setup() {
 
 void loop() {
 
-  motor_on = digitalRead(MOTOR_ON) ? LOW : HIGH;
+  butt_reset.update();
+  if (butt_reset.read() == LOW) {
+    speed = 0;
+  }
+
+  motor_on = (digitalRead(MOTOR_ON) == LOW);
 
   if (!motor_on) {
+    digitalWrite(LED_BUILTIN, LOW);
     analogWrite(MOTOR_PWM, 0);
   } else {
+    digitalWrite(LED_BUILTIN, HIGH);
     analogWrite(MOTOR_PWM, speed);
   }
 
-  printStatus();
-  delay(100);
+  if (speed != old_speed) {
+    old_speed = speed;
+    printStatus();
+  } else {
+    delay(100);
+  }
 
 }
 
