@@ -1,0 +1,32 @@
+#######################################
+# Syntax Coloring Map For TinyLipoMon
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+TinyLipoMon	 KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+voltage	 KEYWORD2
+cell	 KEYWORD2
+
+#######################################
+# Instances (KEYWORD2)
+#######################################
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+
+TINYLIPOMON_SERIAL_BAUD LITERAL1
+TINYLIPOMON_SERIAL_TIMEOUT  LITERAL1
+TINYLIPOMON_DELAY LITERAL1
+CELL1 LITERAL1
+CELL2 LITERAL2
+CELL3 LITERAL3
+CELL4 LITERAL4
