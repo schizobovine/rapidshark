@@ -29,7 +29,7 @@ const float VDIV[NUM_CELLS] = {
 // GLOBAL STATE VARIABLES
 ////////////////////////////////////////////////////////////////////////
 
-TinyLipoMon monitor = TinyLipoMon(TINYLIPOMON_TX, TINYLIPOMON_RX, NUM_CELLS);
+TinyLipoMon monitor = TinyLipoMon(TINYLIPOMON_TX, TINYLIPOMON_EN, NUM_CELLS);
 
 ////////////////////////////////////////////////////////////////////////
 // STARTUP CODE
@@ -42,7 +42,7 @@ void setup() {
   }
   while (!Serial)
     delay(10);
-  Serial.begin(9600);
+  Serial.begin(115200);
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -58,4 +58,6 @@ void loop() {
     Serial.print(F(", raw = "));
     Serial.print(monitor.cell_raw(i));
     Serial.println();
+  }
+  delay(1000);
 }

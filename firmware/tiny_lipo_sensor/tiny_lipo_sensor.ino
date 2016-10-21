@@ -125,7 +125,7 @@ void loop() {
     serial.begin(SERIAL_BAUD);
     serial.write((uint8_t)NUM_CELLS);
     for (uint8_t i=0; i<NUM_CELLS; i++) {
-      serial.write((uint8_t)i); // Cell num
+      serial.write((uint8_t)(i+1)); // Cell num
       serial.write((uint8_t)((readings[i] >> 0) & 0xFF));
       serial.write((uint8_t)((readings[i] >> 8) & 0xFF));
     }
