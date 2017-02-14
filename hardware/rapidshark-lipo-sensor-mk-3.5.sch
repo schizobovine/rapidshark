@@ -8,20 +8,20 @@
 </settings>
 <grid distance="100" unitdist="mil" unit="mil" style="lines" multiple="1" display="yes" altdistance="2" altunitdist="mil" altunit="mil"/>
 <layers>
-<layer number="1" name="Top" color="4" fill="1" visible="yes" active="no"/>
-<layer number="16" name="Bottom" color="1" fill="1" visible="yes" active="no"/>
-<layer number="17" name="Pads" color="2" fill="1" visible="yes" active="no"/>
-<layer number="18" name="Vias" color="2" fill="1" visible="yes" active="no"/>
-<layer number="19" name="Unrouted" color="6" fill="1" visible="yes" active="no"/>
-<layer number="20" name="Dimension" color="15" fill="1" visible="yes" active="no"/>
-<layer number="21" name="tPlace" color="7" fill="1" visible="yes" active="no"/>
-<layer number="22" name="bPlace" color="7" fill="1" visible="yes" active="no"/>
-<layer number="23" name="tOrigins" color="15" fill="1" visible="yes" active="no"/>
-<layer number="24" name="bOrigins" color="15" fill="1" visible="yes" active="no"/>
-<layer number="25" name="tNames" color="7" fill="1" visible="yes" active="no"/>
-<layer number="26" name="bNames" color="7" fill="1" visible="yes" active="no"/>
-<layer number="27" name="tValues" color="7" fill="1" visible="yes" active="no"/>
-<layer number="28" name="bValues" color="7" fill="1" visible="yes" active="no"/>
+<layer number="1" name="Top" color="4" fill="1" visible="no" active="no"/>
+<layer number="16" name="Bottom" color="1" fill="1" visible="no" active="no"/>
+<layer number="17" name="Pads" color="2" fill="1" visible="no" active="no"/>
+<layer number="18" name="Vias" color="2" fill="1" visible="no" active="no"/>
+<layer number="19" name="Unrouted" color="6" fill="1" visible="no" active="no"/>
+<layer number="20" name="Dimension" color="15" fill="1" visible="no" active="no"/>
+<layer number="21" name="tPlace" color="7" fill="1" visible="no" active="no"/>
+<layer number="22" name="bPlace" color="7" fill="1" visible="no" active="no"/>
+<layer number="23" name="tOrigins" color="15" fill="1" visible="no" active="no"/>
+<layer number="24" name="bOrigins" color="15" fill="1" visible="no" active="no"/>
+<layer number="25" name="tNames" color="7" fill="1" visible="no" active="no"/>
+<layer number="26" name="bNames" color="7" fill="1" visible="no" active="no"/>
+<layer number="27" name="tValues" color="7" fill="1" visible="no" active="no"/>
+<layer number="28" name="bValues" color="7" fill="1" visible="no" active="no"/>
 <layer number="29" name="tStop" color="7" fill="3" visible="no" active="no"/>
 <layer number="30" name="bStop" color="7" fill="6" visible="no" active="no"/>
 <layer number="31" name="tCream" color="7" fill="4" visible="no" active="no"/>
@@ -30,8 +30,8 @@
 <layer number="34" name="bFinish" color="6" fill="6" visible="no" active="no"/>
 <layer number="35" name="tGlue" color="7" fill="4" visible="no" active="no"/>
 <layer number="36" name="bGlue" color="7" fill="5" visible="no" active="no"/>
-<layer number="37" name="tTest" color="7" fill="1" visible="yes" active="no"/>
-<layer number="38" name="bTest" color="7" fill="1" visible="yes" active="no"/>
+<layer number="37" name="tTest" color="7" fill="1" visible="no" active="no"/>
+<layer number="38" name="bTest" color="7" fill="1" visible="no" active="no"/>
 <layer number="39" name="tKeepout" color="4" fill="11" visible="no" active="no"/>
 <layer number="40" name="bKeepout" color="1" fill="11" visible="no" active="no"/>
 <layer number="41" name="tRestrict" color="4" fill="10" visible="no" active="no"/>
@@ -39,19 +39,19 @@
 <layer number="43" name="vRestrict" color="2" fill="10" visible="no" active="no"/>
 <layer number="44" name="Drills" color="7" fill="1" visible="no" active="no"/>
 <layer number="45" name="Holes" color="7" fill="1" visible="no" active="no"/>
-<layer number="46" name="Milling" color="3" fill="1" visible="yes" active="no"/>
-<layer number="47" name="Measures" color="7" fill="1" visible="yes" active="no"/>
-<layer number="48" name="Document" color="7" fill="1" visible="yes" active="no"/>
-<layer number="49" name="Reference" color="7" fill="1" visible="yes" active="no"/>
-<layer number="50" name="dxf" color="7" fill="1" visible="yes" active="no"/>
-<layer number="51" name="tDocu" color="7" fill="1" visible="yes" active="no"/>
-<layer number="52" name="bDocu" color="7" fill="1" visible="yes" active="no"/>
-<layer number="53" name="tGND_GNDA" color="7" fill="9" visible="yes" active="no"/>
-<layer number="54" name="bGND_GNDA" color="1" fill="9" visible="yes" active="no"/>
-<layer number="56" name="wert" color="7" fill="1" visible="yes" active="no"/>
-<layer number="57" name="tCAD" color="7" fill="1" visible="yes" active="no"/>
-<layer number="59" name="tCarbon" color="7" fill="1" visible="yes" active="no"/>
-<layer number="60" name="bCarbon" color="7" fill="1" visible="yes" active="no"/>
+<layer number="46" name="Milling" color="3" fill="1" visible="no" active="no"/>
+<layer number="47" name="Measures" color="7" fill="1" visible="no" active="no"/>
+<layer number="48" name="Document" color="7" fill="1" visible="no" active="no"/>
+<layer number="49" name="Reference" color="7" fill="1" visible="no" active="no"/>
+<layer number="50" name="dxf" color="7" fill="1" visible="no" active="no"/>
+<layer number="51" name="tDocu" color="7" fill="1" visible="no" active="no"/>
+<layer number="52" name="bDocu" color="7" fill="1" visible="no" active="no"/>
+<layer number="53" name="tGND_GNDA" color="7" fill="9" visible="no" active="no"/>
+<layer number="54" name="bGND_GNDA" color="1" fill="9" visible="no" active="no"/>
+<layer number="56" name="wert" color="7" fill="1" visible="no" active="no"/>
+<layer number="57" name="tCAD" color="7" fill="1" visible="no" active="no"/>
+<layer number="59" name="tCarbon" color="7" fill="1" visible="no" active="no"/>
+<layer number="60" name="bCarbon" color="7" fill="1" visible="no" active="no"/>
 <layer number="90" name="Modules" color="5" fill="1" visible="yes" active="yes"/>
 <layer number="91" name="Nets" color="2" fill="1" visible="yes" active="yes"/>
 <layer number="92" name="Busses" color="1" fill="1" visible="yes" active="yes"/>
@@ -8977,7 +8977,7 @@ FQP27P06 -
 <parts>
 <part name="FRAME1" library="A_butts" deviceset="FRAME-LETTER" device="NO_PACKAGE">
 <attribute name="DESIGNER" value="sean@yak.net"/>
-<attribute name="VERSION" value="v3.4"/>
+<attribute name="VERSION" value="v3.5"/>
 </part>
 <part name="C1" library="a_parts" deviceset="CAPACITOR-CERAMIC" device="C0603-TIGHTER" value="1u"/>
 <part name="SUPPLY4" library="A_butts" deviceset="VCC" device=""/>
@@ -8991,9 +8991,9 @@ FQP27P06 -
 <part name="RST/CS" library="a_parts" deviceset="JUMPER-PAD-3-NO" device="FULL_BOX_SILK"/>
 <part name="GND1" library="A_butts" deviceset="GND" device=""/>
 <part name="GND2" library="A_butts" deviceset="GND" device=""/>
-<part name="D1" library="a_parts" deviceset="DIODE-ZENER" device="SOD123" value="MMSZ5240"/>
-<part name="D2" library="a_parts" deviceset="DIODE-ZENER" device="SOD123" value="MMSZ5240"/>
-<part name="D3" library="a_parts" deviceset="DIODE-ZENER" device="SOD123" value="MMSZ5240"/>
+<part name="D1" library="a_parts" deviceset="DIODE-ZENER" device="SOD323" value="MMSZ5240"/>
+<part name="D2" library="a_parts" deviceset="DIODE-ZENER" device="SOD323" value="MMSZ5240"/>
+<part name="D3" library="a_parts" deviceset="DIODE-ZENER" device="SOD323" value="MMSZ5240"/>
 <part name="R11" library="a_parts" deviceset="RESISTOR" device="R0603-TIGHTER" value="10K"/>
 <part name="R10" library="a_parts" deviceset="RESISTOR" device="R0603-TIGHTER" value="36K"/>
 <part name="R1" library="a_parts" deviceset="RESISTOR" device="R0603-TIGHTER" value="100K"/>
@@ -9007,16 +9007,19 @@ FQP27P06 -
 <part name="R9" library="a_parts" deviceset="RESISTOR" device="R0603-TIGHTER" value="100K"/>
 <part name="JP1" library="a_parts" deviceset="M04" device="JST_XH_RA" value="M04JST_XH_RA"/>
 <part name="JP2" library="a_parts" deviceset="M06" device="PTH_CENTERED" value="M06PTH_CENTERED"/>
-<part name="Q1" library="a_parts" deviceset="MOSFET-PCHANNEL" device="SOT-23" value="IRLML2244"/>
+<part name="Q1" library="a_parts" deviceset="MOSFET-PCHANNEL" device="SOT-23" value="BSH203"/>
 <part name="Q2" library="a_parts" deviceset="MOSFET-NCHANNEL" device="IRLML2502" value="IRLML2502"/>
-<part name="Q3" library="a_parts" deviceset="MOSFET-PCHANNEL" device="SOT-23" value="IRLML2244"/>
+<part name="Q3" library="a_parts" deviceset="MOSFET-PCHANNEL" device="SOT-23" value="BSH203"/>
 <part name="Q4" library="a_parts" deviceset="MOSFET-NCHANNEL" device="IRLML2502" value="IRLML2502"/>
-<part name="Q5" library="a_parts" deviceset="MOSFET-PCHANNEL" device="SOT-23" value="IRLML2244"/>
+<part name="Q5" library="a_parts" deviceset="MOSFET-PCHANNEL" device="SOT-23" value="BSH203"/>
 <part name="Q6" library="a_parts" deviceset="MOSFET-NCHANNEL" device="IRLML2502" value="IRLML2502"/>
 </parts>
 <sheets>
 <sheet>
 <plain>
+<text x="30.48" y="177.8" size="1.27" layer="97" align="center-left">+4.2V</text>
+<text x="83.82" y="177.8" size="1.27" layer="97" align="center-left">8.4V</text>
+<text x="134.62" y="177.8" size="1.27" layer="97" align="center-left">12.6V</text>
 </plain>
 <instances>
 <instance part="FRAME1" gate="G$1" x="0" y="0"/>
