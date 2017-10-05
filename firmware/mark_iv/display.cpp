@@ -58,8 +58,8 @@
 extern Adafruit_SSD1306 display;
 
 // Motor controllers
-extern VNH5019 motor_accel;
 extern VNH5019 motor_push;
+extern uint8_t accel_speed;
 
 // Button/switch debouncers
 extern Bounce switchPusher;
@@ -122,16 +122,16 @@ void displayRefresh() {
   }
   displayLabel(30, 56, "RPM", false);
 
-  displayLabel(66, 40, " FLY", (motor_accel.isGoing()));
+  displayLabel(66, 40, " FLY", (accel_speed > 0));
   displayLabel(66, 48, "PUSH", (motor_push.isGoing()));
 
-  if (motor_accel.isGoing()) {
+  if (accel_speed > 0) {
     displayDecimal(60, 56, tach.rpm());
   } else {
     displayDecimal(60, 56, _max_rpm);
   }
 
-  displayDecimal(96, 40, motor_accel.getSpeed());
+  displayDecimal(96, 40, accel_speed);
   displayDecimal(96, 48, motor_push.getSpeed());
   if (finishedAccel()) {
     displayLabel(96, 56, "ACC", true);

@@ -20,20 +20,17 @@
 // Pin assignments
 //
 
-#define PIN_TACHOMETER  2
-#define PIN_SW_PUSH     3
+
+#define PIN_SW_PUSH     2
+#define PIN_ACCEL_PWM   3
 #define PIN_SW_CLIP     4
-#define PIN_SW_FIRE     6
-#define PIN_SW_ACCEL    5
+#define PIN_SW_FIRE     5
+#define PIN_SW_ACCEL    6
 #define PIN_PUSH_A      7
-#define PIN_ACCEL_A     8
-#define PIN_ACCEL_PWM   9
-#define PIN_ACCEL_B     10
+#define PIN_TACHOMETER  8
+#define PIN_PUSH_B      9
 #define PIN_PUSH_PWM    11
-#define PIN_PUSH_B      12
-#define PIN_BUTT_Z      A0
-#define PIN_BUTT_Y      A1
-#define PIN_BUTT_X      A2
+#define PIN_BUTT        A0
 #define PIN_DISP_RST    A3
 
 //
@@ -75,9 +72,7 @@
 #define DEBOUNCE_CLIP         (10)
 #define DEBOUNCE_FIRE         (10)
 #define DEBOUNCE_ACCEL        (10)
-#define DEBOUNCE_BUTT_Z       (10)
-#define DEBOUNCE_BUTT_Y       (10)
-#define DEBOUNCE_BUTT_X       (10)
+#define DEBOUNCE_BUTT         (10)
 
 //
 // Helper macros for readability

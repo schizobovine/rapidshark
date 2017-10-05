@@ -54,7 +54,6 @@ Adafruit_SSD1306 display(PIN_DISP_RST);
 Tachometer tach;
 
 // Motor controllers
-VNH5019 motor_accel = VNH5019(PIN_ACCEL_A, PIN_ACCEL_B, PIN_ACCEL_PWM, MOTOR_ACCEL_SPEED);
 VNH5019 motor_push  = VNH5019(PIN_PUSH_A,  PIN_PUSH_B,  PIN_PUSH_PWM,  MOTOR_PUSH_SPEED);
 
 // Button/switch debouncers
@@ -63,7 +62,7 @@ Bounce switchPusher;
 Bounce switchClipDetect;
 Bounce switchFireTrigger;
 Bounce switchAccelTrigger;
-Bounce buttonX;
+Bounce button;
 Bounce buttonY;
 Bounce buttonZ;
 
@@ -75,6 +74,7 @@ FireMode fireMode(MODE_FULL_AUTO);
 
 // Maximum RPM for display
 volatile float _max_rpm = 0.0;
+volatile uint8_t accel_speed = 0;
 
 ////////////////////////////////////////////////////////////////////////
 // MOTOR STATE MACHINE
@@ -143,18 +143,19 @@ void setMotorState() {
 
     // If we're not at speed, floor it
     if (finishedAccel()) {
-      motor_accel.setSpeed(MOTOR_ACCEL_SPEED_MAX);
-      motor_accel.go();
+      analogWrite(PIN_ACCEL_PWM, MOTOR_ACCEL_SPEED_MAX);
+      accel_speed = MOTOR_ACCEL_SPEED_MAX;
 
     // Already looks like we're at speed, so just use normal throttle setting
     } else {
-      motor_accel.setSpeed(MOTOR_ACCEL_SPEED);
-      motor_accel.go();
+      analogWrite(PIN_ACCEL_PWM, MOTOR_ACCEL_SPEED);
+      accel_speed = MOTOR_ACCEL_SPEED;
     }
 
   // Otherwise, brake motor (and reset tach)
   } else {
-    motor_accel.brake();
+    analogWrite(PIN_ACCEL_PWM, 0);
+    accel_speed = 0;
     _max_rpm = tach.getMaxRPM();
     tach.reset();
   }
@@ -240,25 +241,11 @@ void irq_sw_accel() {
 }
 
 /*
- * irq_butt_x - Called when user presses the X button (down only)
+ * irq_butt - Called when user presses the button (down only)
  */
-void irq_butt_x() {
-  buttonX.update();
-}
-
-/*
- * irq_butt_y - Called when user presses the Y button (down only)
- */
-void irq_butt_y() {
-  buttonY.update();
-}
-
-/*
- * irq_butt_z - Called when user presses the Z button (down only)
- */
-void irq_butt_z() {
-  if (buttonZ.update()) {
-    if (buttonZ.rose()) {
+void irq_butt() {
+  if (button.update()) {
+    if (button.rose()) {
       fireMode.nextMode();
     }
   }
@@ -281,7 +268,6 @@ void setup() {
 #endif
 
   // Set motors to know good state (i.e., not running)
-  motor_accel.init();
   motor_push.init();
 
   // Set initial tach state
@@ -293,9 +279,10 @@ void setup() {
   enableInterrupt(PIN_SW_CLIP,    irq_sw_clip,   CHANGE);
   enableInterrupt(PIN_SW_FIRE,    irq_sw_fire,   CHANGE);
   enableInterrupt(PIN_SW_ACCEL,   irq_sw_accel,  CHANGE);
-  enableInterrupt(PIN_BUTT_X,     irq_butt_x,    CHANGE);
-  enableInterrupt(PIN_BUTT_Y,     irq_butt_y,    CHANGE);
-  enableInterrupt(PIN_BUTT_Z,     irq_butt_z,    CHANGE);
+  enableInterrupt(PIN_BUTT,       irq_butt,      CHANGE);
+  //enableInterrupt(PIN_BUTT_X,     irq_butt_x,    CHANGE);
+  //enableInterrupt(PIN_BUTT_Y,     irq_butt_y,    CHANGE);
+  //enableInterrupt(PIN_BUTT_Z,     irq_butt_z,    CHANGE);
 
   // Setup debouncing objects
   tachSensor        .attach(PIN_TACHOMETER, INPUT_PULLUP, DEBOUNCE_TACHOMETER);
@@ -303,9 +290,7 @@ void setup() {
   switchClipDetect  .attach(PIN_SW_CLIP,    INPUT_PULLUP, DEBOUNCE_CLIP);
   switchFireTrigger .attach(PIN_SW_FIRE,    INPUT_PULLUP, DEBOUNCE_FIRE);
   switchAccelTrigger.attach(PIN_SW_ACCEL,   INPUT_PULLUP, DEBOUNCE_ACCEL);
-  buttonX           .attach(PIN_BUTT_X,     INPUT_PULLUP, DEBOUNCE_BUTT_X);
-  buttonY           .attach(PIN_BUTT_Y,     INPUT_PULLUP, DEBOUNCE_BUTT_Y);
-  buttonZ           .attach(PIN_BUTT_Z,     INPUT_PULLUP, DEBOUNCE_BUTT_Z);
+  button            .attach(PIN_BUTT,       INPUT_PULLUP, DEBOUNCE_BUTT);
 
   // Boot up display and show "splash" screen
   displayInit();
