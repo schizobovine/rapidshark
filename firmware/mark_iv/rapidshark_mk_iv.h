@@ -24,14 +24,14 @@
 #define PIN_SW_PUSH     2
 #define PIN_ACCEL_PWM   3
 #define PIN_SW_CLIP     4
-#define PIN_SW_FIRE     5
-#define PIN_SW_ACCEL    6
+#define PIN_SW_ACCEL    5
+#define PIN_SW_FIRE     6
 #define PIN_PUSH_A      7
 #define PIN_TACHOMETER  8
 #define PIN_PUSH_B      9
 #define PIN_PUSH_PWM    11
-#define PIN_BUTT        A0
-#define PIN_DISP_RST    A3
+#define PIN_BUTT        13
+#define PIN_DISP_RST    -1
 
 //
 // Display parameters

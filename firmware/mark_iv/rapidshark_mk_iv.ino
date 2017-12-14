@@ -62,9 +62,7 @@ Bounce switchPusher;
 Bounce switchClipDetect;
 Bounce switchFireTrigger;
 Bounce switchAccelTrigger;
-Bounce button;
-Bounce buttonY;
-Bounce buttonZ;
+Bounce butt;
 
 // Current & total ammo counters
 AmmoClip ammo_clip(CLIP_DEFAULT);
@@ -89,10 +87,10 @@ volatile uint8_t accel_speed = 0;
  *
  */
 bool finishedAccel() {
-  uint16_t tau = tach.tau();
-  if (tau != 0 && tau <= MOTOR_ACCEL_SET_PERIOD) {
-    return true;
-  }
+  //uint16_t tau = tach.tau();
+  //if (tau != 0 && tau <= MOTOR_ACCEL_SET_PERIOD) {
+  //  return true;
+  //}
   return false;
 }
 
@@ -244,10 +242,8 @@ void irq_sw_accel() {
  * irq_butt - Called when user presses the button (down only)
  */
 void irq_butt() {
-  if (button.update()) {
-    if (button.rose()) {
-      fireMode.nextMode();
-    }
+  if (butt.update() && butt.fell()) {
+    fireMode.nextMode();
   }
 }
 
@@ -273,24 +269,21 @@ void setup() {
   // Set initial tach state
   tach.reset();
 
+  // Setup debouncing objects
+  //tachSensor        .attach(PIN_TACHOMETER, INPUT_PULLUP, DEBOUNCE_TACHOMETER);
+  switchPusher      .attach(PIN_SW_PUSH,    INPUT_PULLUP, DEBOUNCE_PUSH);
+  switchClipDetect  .attach(PIN_SW_CLIP,    INPUT_PULLUP, DEBOUNCE_CLIP);
+  switchFireTrigger .attach(PIN_SW_FIRE,    INPUT_PULLUP, DEBOUNCE_FIRE);
+  switchAccelTrigger.attach(PIN_SW_ACCEL,   INPUT_PULLUP, DEBOUNCE_ACCEL);
+  butt              .attach(PIN_BUTT,       INPUT_PULLUP, DEBOUNCE_BUTT);
+
   // Setup interrupt handlers
-  enableInterrupt(PIN_TACHOMETER, irq_tach_sens, CHANGE);
+  //enableInterrupt(PIN_TACHOMETER, irq_tach_sens, CHANGE);
   enableInterrupt(PIN_SW_PUSH,    irq_sw_push,   CHANGE);
   enableInterrupt(PIN_SW_CLIP,    irq_sw_clip,   CHANGE);
   enableInterrupt(PIN_SW_FIRE,    irq_sw_fire,   CHANGE);
   enableInterrupt(PIN_SW_ACCEL,   irq_sw_accel,  CHANGE);
   enableInterrupt(PIN_BUTT,       irq_butt,      CHANGE);
-  //enableInterrupt(PIN_BUTT_X,     irq_butt_x,    CHANGE);
-  //enableInterrupt(PIN_BUTT_Y,     irq_butt_y,    CHANGE);
-  //enableInterrupt(PIN_BUTT_Z,     irq_butt_z,    CHANGE);
-
-  // Setup debouncing objects
-  tachSensor        .attach(PIN_TACHOMETER, INPUT_PULLUP, DEBOUNCE_TACHOMETER);
-  switchPusher      .attach(PIN_SW_PUSH,    INPUT_PULLUP, DEBOUNCE_PUSH);
-  switchClipDetect  .attach(PIN_SW_CLIP,    INPUT_PULLUP, DEBOUNCE_CLIP);
-  switchFireTrigger .attach(PIN_SW_FIRE,    INPUT_PULLUP, DEBOUNCE_FIRE);
-  switchAccelTrigger.attach(PIN_SW_ACCEL,   INPUT_PULLUP, DEBOUNCE_ACCEL);
-  button            .attach(PIN_BUTT,       INPUT_PULLUP, DEBOUNCE_BUTT);
 
   // Boot up display and show "splash" screen
   displayInit();
