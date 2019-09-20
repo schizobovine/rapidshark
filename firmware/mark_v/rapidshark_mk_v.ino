@@ -14,7 +14,7 @@
 #include <Bounce2.h>
 #include <SPI.h>
 #include <Wire.h>
-#include <EnableInterrupt.h>
+//#include <EnableInterrupt.h>
 #include <FreqMeasure.h>
 
 ////////////////////////////////////////////////////////////////////////
@@ -213,11 +213,11 @@ void setup() {
   switchAccl.attach(PIN_SW_BUTT, INPUT_PULLUP, DEBOUNCE_BUTT);
 
   // Register interrupt handlers which invoke debouncers
-  enableInterrupt(PIN_SW_PUSH, irq_sw_push, CHANGE);
-  enableInterrupt(PIN_SW_CLIP, irq_sw_clip, CHANGE);
-  enableInterrupt(PIN_SW_FIRE, irq_sw_fire, CHANGE);
-  enableInterrupt(PIN_SW_ACCL, irq_sw_accl, CHANGE);
-  enableInterrupt(PIN_SW_BUTT, irq_sw_butt, FALLING);
+  //attachInterrupt(PIN_SW_PUSH, irq_sw_push, CHANGE);
+  //attachInterrupt(PIN_SW_CLIP, irq_sw_clip, CHANGE);
+  //attachInterrupt(PIN_SW_FIRE, irq_sw_fire, CHANGE);
+  //attachInterrupt(PIN_SW_ACCL, irq_sw_accl, CHANGE);
+  //attachInterrupt(PIN_SW_BUTT, irq_sw_butt, FALLING);
   
   // Setup i2c & display
   Wire.begin();
